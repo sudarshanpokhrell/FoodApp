@@ -18,6 +18,12 @@ const Task = () => {
         style={styles.image}
       />
             </Link>
+            <Link href="/task/paybill" style={styles.link}>
+            <Image
+        source={require("../../../assets/playing.png")} 
+        style={styles.image}
+      />
+            </Link>
           </View>
   )
 }

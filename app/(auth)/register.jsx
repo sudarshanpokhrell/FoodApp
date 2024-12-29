@@ -6,6 +6,16 @@ import { router } from "expo-router";
 import { KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
 import FormComponent from "./FormComponent";
 
+const COLORS = {
+  primary: "#FF6347", 
+  secondary: "#FFA07A", 
+  accent: "#FFE4E1", 
+  text: "#4A4A4A",
+  textLight: "#6B7280", 
+  white: "#FFFFFF",
+  error: "#FF3B30", 
+};
+
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -84,13 +94,16 @@ const Register = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" backgroundColor="#161622" />
+      <StatusBar style="dark" backgroundColor={COLORS.white} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+            {/* Decorative Element */}
+            <View style={styles.decorativeElement} />
+            
             <View style={styles.formWrapper}>
               <Text style={styles.title}>Create Account</Text>
               <Text style={styles.subtitle}>Sign up now to get started with an account</Text>
@@ -98,7 +111,7 @@ const Register = () => {
               <FormComponent
                 formData={formData}
                 setFormData={setFormData}
-                errors={errors}
+                errors={errors} style={styles.formWrapper}
               />
 
               <TouchableOpacity onPress={handleRegister} style={styles.button}>
@@ -122,35 +135,56 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#161622",
+    backgroundColor: COLORS.white,
+  },
+  formWrapper:{
+    backgroundColor:"#fff",
   },
   scrollContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
+    position: 'relative',
+  },
+  decorativeElement: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 200,
+    height: 200,
+    backgroundColor: COLORS.accent,
+    borderBottomLeftRadius: 100,
+    opacity: 0.5,
   },
   formWrapper: {
     marginTop: 32,
+    marginBottom: 32,
   },
   title: {
-    fontSize: 24,
-    color: "#ffffff",
+    fontSize: 32,
+    color: COLORS.text,
     fontWeight: "bold",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: "#9ca3af",
+    color: COLORS.textLight,
     marginBottom: 32,
+    lineHeight: 24,
   },
   button: {
-    backgroundColor: "#4f46e5",
+    backgroundColor: COLORS.primary,
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 30,
     alignItems: "center",
-    marginTop: 16,
+    marginTop: 24,
+    elevation: 2,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   buttonText: {
-    color: "#ffffff",
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: 18,
     fontWeight: "600",
   },
   loginRedirectContainer: {
@@ -159,11 +193,13 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   loginRedirectText: {
-    color: "#9ca3af",
+    color: COLORS.textLight,
+    fontSize: 16,
   },
   loginRedirectLink: {
-    color: "#4f46e5",
-    fontWeight: "500",
+    color: COLORS.primary,
+    fontWeight: "600",
+    fontSize: 16,
   },
 });
 

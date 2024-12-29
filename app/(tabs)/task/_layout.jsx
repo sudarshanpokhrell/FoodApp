@@ -15,6 +15,10 @@ const TaskLayout = () => {
         name="task/guess"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="task/paybill"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 };

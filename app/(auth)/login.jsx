@@ -258,11 +258,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     marginBottom: 16,
-    height: 56, // Fixed height for input container
+    height: 56, 
   },
   passwordContainer: {
     marginBottom: 16,
-    height: 56, // Fixed height for password container
+    height: 56, 
   },
   countryButton: {
     borderWidth: 1,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    height: "100%", // Match parent height
+    height: "100%", 
   },
   flag: {
     fontSize: 24,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     backgroundColor: "#fff",
-    height: "100%", // Match parent height
+    height: "100%",
   },
   passwordInput: {
     marginBottom: 0,
