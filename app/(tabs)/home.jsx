@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const Home = () => {
   const [greeting, setGreeting] = useState("");
+
   const [recommendedItems, setRecommendedItems] = useState([
     {
       id: "1",
@@ -62,6 +63,33 @@ const Home = () => {
     },
   ]);
 
+  const [rapidFeast, setRapidFeast] = useState([
+    {
+      id: "1",
+      name: "Momo",
+      price: "2.90",
+      rating: "4.5",
+      image:
+        "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
+    },
+    {
+      id: "2",
+      name: "Chicken Leg Piece",
+      price: "3.50",
+      rating: "4.8",
+      image:
+        "https://www.thespruceeats.com/thmb/Ce9JRCp8CRy0TvjpOMG1_zzhrWE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/terris-crispy-fried-chicken-legs-3056879-hero-01-db3cd6bfead040e6ad07528a162db843.jpg",
+    },
+    {
+      id: "3",
+      name: "Chicken Pizza",
+      price: "4.20",
+      rating: "4.6",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Lj3_8eh0xYQLDhyh1pYwOF6l00mL7hIfww&s",
+    },
+  ]);
+
   useEffect(() => {
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
@@ -73,6 +101,7 @@ const Home = () => {
     }
   }, []);
 
+  
   const renderRecommendedItem = ({ item }) => (
     <TouchableOpacity style={styles.recommendedCard}>
       <Image
@@ -123,6 +152,7 @@ const Home = () => {
     </TouchableOpacity>
   );
 
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -164,7 +194,7 @@ const Home = () => {
       />
       <Text style={styles.sectionTitle}>Rapid Feast</Text>
       <FlatList
-        data={recommendedItems}
+        data={rapidFeast}
         renderItem={renderRecommendedItem}
         keyExtractor={(item) => item.id}
         horizontal

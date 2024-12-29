@@ -3,11 +3,13 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
+import { KeyboardAvoidingView, Platform,Keyboard } from "react-native";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
+    email:"",
     password: "",
     confirmPassword: "",
   });
@@ -15,6 +17,7 @@ const Register = () => {
   const [errors, setErrors] = useState({
     fullName: "",
     phone: "",
+    email:"",
     password: "",
     confirmPassword: "",
   });
@@ -24,42 +27,49 @@ const Register = () => {
     const newErrors = {
       fullName: "",
       phone: "",
+      email:"",
       password: "",
       confirmPassword: "",
     };
 
-    // Full Name validation
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
-      isValid = false;
+      isValid = true;
     }
 
     // Phone validation
-    const phoneRegex = /^\d{10}$/; // Adjust for specific country formats if needed
+    const phoneRegex = /^\d{10}$/; 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
-      isValid = false;
+      isValid = true;
     } else if (!phoneRegex.test(formData.phone)) {
       newErrors.phone = "Invalid phone number format";
-      isValid = false;
+      isValid = true;
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = true;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email address";
+      isValid = true;
     }
 
     // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
-      isValid = false;
+      isValid = true;
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
-      isValid = false;
+      isValid = true;
     }
 
     // Confirm Password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-      isValid = false;
+      isValid = true;
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
-      isValid = false;
+      isValid = true;
     }
 
     setErrors(newErrors);
@@ -68,10 +78,8 @@ const Register = () => {
 
   const handleRegister = () => {
     if (validateForm()) {
-      // Add your registration logic here
       console.log("Registration data:", formData);
-      // Navigate to verification or login page
-      router.push("/login");
+      router.push("/preferences");
     }
   };
 
@@ -97,7 +105,11 @@ const Register = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" backgroundColor="#161622" />
+    <StatusBar style="light" backgroundColor="#161622" />
+    <KeyboardAvoidingView 
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.formWrapper}>
           <Text style={styles.title}>Create Account</Text>
@@ -119,6 +131,15 @@ const Register = () => {
               setFormData({ ...formData, phone: text })
             }
             error={errors.phone}
+          />
+
+          <InputField
+            placeholder="Email"
+            value={formData.email}
+            onChangeText={(text) => 
+              setFormData({ ...formData, email: text })
+            }
+            error={errors.email}
           />
 
           <InputField
@@ -156,8 +177,9 @@ const Register = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
-  );
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
