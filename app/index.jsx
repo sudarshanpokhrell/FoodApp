@@ -56,6 +56,9 @@ const Welcome = () => {
           <Link href="/login" style={{ marginTop: 20 }}>
             <Text style={{ color: "#D1D5DB", fontSize: 16 }}>Login</Text>
           </Link>
+          <Link href="/register" style={{ marginTop: 20 }}>
+            <Text style={{ color: "#D1D5DB", fontSize: 16 }}>Sign Up</Text>
+          </Link>
         </View>
       </ScrollView>
 
