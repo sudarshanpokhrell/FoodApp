@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { Redirect, router } from "expo-router";
-import { View, Text, Image, ScrollView, SafeAreaViewBase } from "react-native";
+import { View, Text, Image, ScrollView, SafeAreaViewBase, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Welcome = () => {
@@ -27,6 +27,11 @@ const Welcome = () => {
           </Text>
         </View>
       </ScrollView>
+      <TouchableOpacity onClick={() => router.replace("/login")}>
+        <View className="bg-secondary-200 p-4 rounded-lg items-center">
+          <Text className="text-white text-base font-semibold">Login</Text>
+        </View>
+      </TouchableOpacity>
 
       <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>
