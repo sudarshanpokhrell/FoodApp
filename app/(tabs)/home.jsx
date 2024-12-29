@@ -155,7 +155,7 @@ const Home = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Hello, Sanjay!</Text>
+        <Text style={styles.headerText}>{greeting}, Sanjay!</Text>
         <TouchableOpacity style={styles.profileButton}>
           <Ionicons name="person-circle-outline" size={24} color="#000" />
         </TouchableOpacity>
