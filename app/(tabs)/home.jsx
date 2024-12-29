@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { router } from "expo-router"; 
+import { router } from "expo-router";
 import {
   View,
   Text,
@@ -43,15 +43,17 @@ const Home = () => {
       cuisine: "Nepali • Indian • Asian",
       rating: "4.7",
       time: "20-30 min",
+      location: "Kathmandu, Nepal", // Add location
       image:
         "https://lh3.googleusercontent.com/p/AF1QipP1CO-JHVhWcVzuMKa7YWbhXbSDnw4xpnL__fd7=s1360-w1360-h1020",
     },
     {
       id: "2",
-      name: "Mero Kitchen",
+      name: "Nepali Ramen",
       cuisine: "Japanese • Ramen • Sushi",
       rating: "4.5",
       time: "25-35 min",
+      location: "Thamel, Kathmandu", // Add location
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrlfFG67yF4BVNVzp448a-u7tIPK5kAij5dw&s",
     },
@@ -108,7 +110,7 @@ const Home = () => {
         style={styles.recommendedImage}
         defaultSource={{
           uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-        }} // Add a local placeholder image
+        }}
       />
       <View style={styles.recommendedContent}>
         <Text style={styles.recommendedName}>{item.name}</Text>
@@ -143,7 +145,7 @@ const Home = () => {
   );
 
   const renderRestaurantItem = ({ item }) => (
-    <TouchableOpacity   onPress={() => router.push('resturants', { restaurant: item })} style={styles.restaurantCard}>
+    <TouchableOpacity style={styles.restaurantCard} onPress={() => router.push(`/restaurant/${item.id}`)}>
       <View style={styles.restaurantContent}>
         <Image
           source={{ uri: item.image }}
@@ -153,7 +155,11 @@ const Home = () => {
           }}
         />
         <View style={styles.restaurantInfo}>
-          <Text style={styles.restaurantName}>{item.name}</Text>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.restaurantName}>{item.name}</Text>
+            <Text style={styles.restaurantLocation}>{item.location}</Text>{" "}
+          </View>
+
           <Text style={styles.restaurantCuisine}>{item.cuisine}</Text>
           <View style={styles.restaurantDetails}>
             <View style={styles.ratingContainer}>
@@ -222,7 +228,7 @@ const Home = () => {
 
       <Text style={styles.sectionTitle}>Nearby Restaurants</Text>
       <View style={styles.restaurantsContainer}>
-      <FlatList
+        <FlatList
           data={nearbyRestaurants}
           renderItem={renderRestaurantItem}
           keyExtractor={(item) => item.id}
@@ -387,7 +393,13 @@ const styles = StyleSheet.create({
     marginRight: 15,
     backgroundColor: "#f0f0f0",
   },
-});
 
+  restaurantLocation: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#666",
+    marginBottom: 2,
+  },
+});
 
 export default Home;

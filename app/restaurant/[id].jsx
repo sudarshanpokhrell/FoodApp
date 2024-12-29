@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 
 const RestaurantDetails = ({ restaurant }) => {
+  const { id } = useLocalSearchParams();
+
   const defaultRestaurant = {
     name: "Sample Restaurant",
     rating: 4.5,
@@ -13,7 +23,8 @@ const RestaurantDetails = ({ restaurant }) => {
     minimumOrder: 15,
     distance: 1.2,
     priceLevel: 2,
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudHxlbnwwfHwwfHx8MA%3D%3D",
+    image:
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudHxlbnwwfHwwfHx8MA%3D%3D",
     isOpen: true,
     tags: ["Bestseller", "Promoted"],
     description: "Authentic Italian cuisine in a modern setting",
@@ -26,60 +37,65 @@ const RestaurantDetails = ({ restaurant }) => {
         "Pizza",
         "Pasta",
         "Desserts",
-        "Beverages"
+        "Beverages",
       ],
       items: [
         {
-          id: '1',
-          name: 'Margherita Pizza',
-          description: 'Fresh tomatoes, mozzarella, basil, olive oil',
+          id: "1",
+          name: "Margherita Pizza",
+          description: "Fresh tomatoes, mozzarella, basil, olive oil",
           price: 12.99,
-          category: 'Pizza',
-          image: 'https://images.unsplash.com/photo-1598023696416-0193a0bcd302?q=60&w=2000',
+          category: "Pizza",
+          image:
+            "https://images.unsplash.com/photo-1598023696416-0193a0bcd302?q=60&w=2000",
           isVegetarian: true,
           isSpicy: false,
           isBestseller: true,
         },
         {
-          id: '2',
-          name: 'Spaghetti Carbonara',
-          description: 'Eggs, Pecorino Romano, pancetta, black pepper',
+          id: "2",
+          name: "Spaghetti Carbonara",
+          description: "Eggs, Pecorino Romano, pancetta, black pepper",
           price: 14.99,
-          category: 'Pasta',
-          image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?q=60&w=2000',
+          category: "Pasta",
+          image:
+            "https://images.unsplash.com/photo-1612874742237-6526221588e3?q=60&w=2000",
           isVegetarian: false,
           isSpicy: false,
           isBestseller: true,
         },
         {
-          id: '3',
-          name: 'Tiramisu',
-          description: 'Coffee-soaked ladyfingers, mascarpone, cocoa',
+          id: "3",
+          name: "Tiramisu",
+          description: "Coffee-soaked ladyfingers, mascarpone, cocoa",
           price: 6.99,
-          category: 'Desserts',
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBGuQyHc1vkv7YCkXdvEQ9UC7cyAl0cRXxaA&s',
+          category: "Desserts",
+          image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBGuQyHc1vkv7YCkXdvEQ9UC7cyAl0cRXxaA&s",
           isVegetarian: true,
           isSpicy: false,
           isBestseller: true,
         },
         {
-          id: '4',
-          name: 'Bruschetta',
-          description: 'Toasted bread, garlic, tomatoes, basil, olive oil',
+          id: "4",
+          name: "Bruschetta",
+          description: "Toasted bread, garlic, tomatoes, basil, olive oil",
           price: 8.99,
-          category: 'Starters',
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMhRaXSIbW-KSpPBLQ8Az4uc6W_xLk0bVRGw&s',
+          category: "Starters",
+          image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMhRaXSIbW-KSpPBLQ8Az4uc6W_xLk0bVRGw&s",
           isVegetarian: true,
           isSpicy: false,
           isBestseller: false,
         },
         {
-          id: '5',
-          name: 'Penne Arrabiata',
-          description: 'Penne, garlic, tomatoes, chili flakes, olive oil',
+          id: "5",
+          name: "Penne Arrabiata",
+          description: "Penne, garlic, tomatoes, chili flakes, olive oil",
           price: 11.99,
-          category: 'Main Course',
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZjVrIvcUCvl63CaYa5d-HT70QCiNkue1TLA&s',
+          category: "Main Course",
+          image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZjVrIvcUCvl63CaYa5d-HT70QCiNkue1TLA&s",
           isVegetarian: true,
 
           isSpicy: true,
@@ -87,43 +103,30 @@ const RestaurantDetails = ({ restaurant }) => {
         },
 
         {
-          id: '6',
-          name: 'Coca-Cola',
-          description: 'Carbonated soft drink',
+          id: "6",
+          name: "Coca-Cola",
+          description: "Carbonated soft drink",
           price: 2.99,
-          category: 'Beverages',
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxDaINrIyoDnnR9Ika2vrEfn9RntZBd3slMA&s',
+          category: "Beverages",
+          image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxDaINrIyoDnnR9Ika2vrEfn9RntZBd3slMA&s",
           isVegetarian: true,
           isSpicy: false,
           isBestseller: false,
-        }
-        
-      ]
-    }
+        },
+      ],
+    },
   };
 
+  
   const data = { ...defaultRestaurant, ...restaurant };
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const filteredItems = data.menu.items.filter(item =>
-    selectedCategory === 'All' || item.category === selectedCategory
+  const filteredItems = data.menu.items.filter(
+    (item) => selectedCategory === "All" || item.category === selectedCategory
   );
 
-  const renderPriceLevel = () => {
-    return Array(3)
-      .fill(0)
-      .map((_, index) => (
-        <Text
-          key={index}
-          style={[
-            styles.dollarSign,
-            { color: index < data.priceLevel ? '#000' : '#ccc' }
-          ]}
-        >
-          $
-        </Text>
-      ));
-  };
+ 
 
   const renderTags = () => {
     return data.tags.map((tag, index) => (
@@ -138,13 +141,13 @@ const RestaurantDetails = ({ restaurant }) => {
       onPress={() => setSelectedCategory(item)}
       style={[
         styles.categoryItem,
-        selectedCategory === item && styles.selectedCategoryItem
+        selectedCategory === item && styles.selectedCategoryItem,
       ]}
     >
       <Text
         style={[
           styles.categoryText,
-          selectedCategory === item && styles.selectedCategoryText
+          selectedCategory === item && styles.selectedCategoryText,
         ]}
       >
         {item}
@@ -153,7 +156,10 @@ const RestaurantDetails = ({ restaurant }) => {
   );
 
   const renderMenuItem = ({ item }) => (
-    <TouchableOpacity  onPress={() => router.push('food', { food: item })}  style={styles.menuItem}>
+    <TouchableOpacity
+      onPress={() => router.push(`/food/${item.id}`)}
+      style={styles.menuItem}
+    >
       <View style={styles.menuItemContent}>
         <View style={styles.menuItemInfo}>
           <View style={styles.menuItemHeader}>
@@ -196,6 +202,7 @@ const RestaurantDetails = ({ restaurant }) => {
         <View style={styles.headerContainer}>
           <View style={styles.nameContainer}>
             <Text style={styles.name}>{data.name}</Text>
+
             {data.isOpen ? (
               <View style={styles.openBadge}>
                 <Text style={styles.openText}>Open</Text>
@@ -214,32 +221,17 @@ const RestaurantDetails = ({ restaurant }) => {
           </View>
         </View>
 
-        <View style={styles.tagsRow}>
-          {renderTags()}
-        </View>
+        <View style={styles.tagsRow}>{renderTags()}</View>
 
         <Text style={styles.description}>{data.description}</Text>
 
         <View style={styles.cuisineContainer}>
           {data.cuisine.map((item, index) => (
             <Text key={index} style={styles.cuisineText}>
-              {index > 0 ? ' • ' : ''}{item}
+              {index > 0 ? " • " : ""}
+              {item}
             </Text>
           ))}
-        </View>
-
-        <View style={styles.infoContainer}>
-          <View style={styles.infoItem}>
-            <MaterialIcons name="delivery-dining" size={24} color="#666" />
-            <Text style={styles.infoText}>{data.deliveryTime} mins</Text>
-          </View>
-          <View style={styles.infoItem}>
-            <MaterialIcons name="location-on" size={24} color="#666" />
-            <Text style={styles.infoText}>{data.distance} km</Text>
-          </View>
-          <View style={styles.infoItem}>
-            {renderPriceLevel()}
-          </View>
         </View>
 
         <View style={styles.divider} />
@@ -247,6 +239,18 @@ const RestaurantDetails = ({ restaurant }) => {
         <View style={styles.addressContainer}>
           <MaterialIcons name="place" size={20} color="#666" />
           <Text style={styles.address}>{data.address}</Text>
+        </View>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <MaterialIcons name="delivery-dining" size={24} color="#666" />
+            <Text style={styles.infoText}>{data.deliveryTime} mins</Text>
+          </View>
+
+          <View style={styles.infoItem}>
+            <MaterialIcons name="location-on" size={24} color="#666" />
+            <Text style={styles.infoText}>{data.distance} km</Text>
+          </View>
         </View>
 
         <View style={styles.divider} />
@@ -274,6 +278,7 @@ const RestaurantDetails = ({ restaurant }) => {
             contentContainerStyle={styles.menuList}
           />
         </View>
+
       </View>
     </ScrollView>
   );
@@ -282,71 +287,71 @@ const RestaurantDetails = ({ restaurant }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
   contentContainer: {
     padding: 16,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   nameContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   name: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginRight: 8,
   },
   openBadge: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: "#E8F5E9",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
   },
   openText: {
-    color: '#2E7D32',
+    color: "#2E7D32",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   closedBadge: {
-    backgroundColor: '#FFEBEE',
+    backgroundColor: "#FFEBEE",
   },
   closedText: {
-    color: '#C62828',
+    color: "#C62828",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   rating: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 4,
   },
   totalRatings: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginLeft: 4,
   },
   tagsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 12,
   },
   tag: {
-    backgroundColor: '#FFF3E0',
+    backgroundColor: "#FFF3E0",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -354,63 +359,63 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tagText: {
-    color: '#E65100',
+    color: "#E65100",
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 12,
     lineHeight: 20,
   },
   cuisineContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 16,
   },
   cuisineText: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "space-evenly",
   },
   infoText: {
     marginLeft: 4,
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   dollarSign: {
     fontSize: 16,
     marginHorizontal: 1,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   divider: {
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: "#E0E0E0",
     marginVertical: 16,
   },
   addressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   address: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginLeft: 8,
     flex: 1,
   },
   menuTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   // Menu Styles
@@ -425,27 +430,27 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginHorizontal: 4,
     borderRadius: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   selectedCategoryItem: {
-    backgroundColor: '#FF5722',
+    backgroundColor: "#FF5722",
   },
   categoryText: {
     fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
+    color: "#666",
+    fontWeight: "500",
   },
   selectedCategoryText: {
-    color: '#fff',
+    color: "#fff",
   },
   menuList: {
     paddingBottom: 16,
   },
   menuItem: {
     marginBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -455,7 +460,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   menuItemContent: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 12,
   },
   menuItemInfo: {
@@ -463,42 +468,42 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   menuItemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 4,
   },
   menuItemName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     flex: 1,
   },
   menuItemBadges: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginLeft: 8,
   },
   bestsellerBadge: {
-    backgroundColor: '#FFF3E0',
+    backgroundColor: "#FFF3E0",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
     marginLeft: 4,
   },
   bestsellerText: {
-    color: '#E65100',
+    color: "#E65100",
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   menuItemDescription: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 8,
   },
   menuItemPrice: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FF5722',
+    fontWeight: "600",
+    color: "#FF5722",
   },
   menuItemImage: {
     width: 100,
