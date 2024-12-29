@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { router } from "expo-router"; 
 import {
   View,
   Text,
@@ -95,7 +96,7 @@ const Home = () => {
   );
 
   const renderRestaurantItem = ({ item }) => (
-    <TouchableOpacity style={styles.restaurantCard}>
+    <TouchableOpacity   onPress={() => router.push('resturants', { restaurant: item })} style={styles.restaurantCard}>
       <View style={styles.restaurantContent}>
         <Image
           source={{ uri: item.image }}
@@ -173,12 +174,13 @@ const Home = () => {
 
       <Text style={styles.sectionTitle}>Nearby Restaurants</Text>
       <View style={styles.restaurantsContainer}>
-        <FlatList
+      <FlatList
           data={nearbyRestaurants}
           renderItem={renderRestaurantItem}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
         />
+      
       </View>
     </ScrollView>
   );
