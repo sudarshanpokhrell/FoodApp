@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 const RestaurantDetails = ({ restaurant }) => {
   const defaultRestaurant = {
@@ -152,7 +153,7 @@ const RestaurantDetails = ({ restaurant }) => {
   );
 
   const renderMenuItem = ({ item }) => (
-    <TouchableOpacity style={styles.menuItem}>
+    <TouchableOpacity  onPress={() => router.push('food', { food: item })}  style={styles.menuItem}>
       <View style={styles.menuItemContent}>
         <View style={styles.menuItemInfo}>
           <View style={styles.menuItemHeader}>

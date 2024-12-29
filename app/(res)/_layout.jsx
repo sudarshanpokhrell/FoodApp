@@ -13,7 +13,6 @@ const RestLayout = () => {
             headerShown: false,
           }}
         />
-               
 
       </Stack>
 

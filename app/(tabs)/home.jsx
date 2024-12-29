@@ -210,7 +210,6 @@ const Home = () => {
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
         />
-      
       </View>
     </ScrollView>
   );
