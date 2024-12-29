@@ -52,7 +52,6 @@ const LoginScreen = () => {
         "Password:",
         password
       );
-      // Navigate to a different page after successful login
       router.push("/home");
     }
   };
