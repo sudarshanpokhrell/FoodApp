@@ -48,7 +48,7 @@ const NumberQuestGame = () => {
         } else {
           Alert.alert(
             'Game Over',
-            'Want to try again?',
+            'Try again tommrow',
             [{ text: 'Retry', onPress: resetGame }]
           );
         }
@@ -77,12 +77,12 @@ const NumberQuestGame = () => {
   };
 
   const renderNumberBlocks = () => {
-    const blocks = ['2', '3', '9', '6'];
-    return blocks.map((number, index) => (
+   
+    return (
       <View key={index} style={styles.numberBlock}>
         <Text style={styles.numberText}>{number}</Text>
       </View>
-    ));
+)
   };
 
   const renderInputBlocks = () => {
