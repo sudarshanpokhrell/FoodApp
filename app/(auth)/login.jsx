@@ -24,16 +24,15 @@ const countryCodes = [
 ];
 
 const LoginScreen = () => {
-  const [identifier, setIdentifier] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(countryCodes[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const [error, setError] = useState("");
 
   const validateInput = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{10}$/;
-    if (!emailRegex.test(identifier) && !phoneRegex.test(identifier)) {
+    if (!phoneRegex.test(phoneNumber)) {
       setError("Please enter a valid email or phone number");
       return false;
     }
@@ -47,12 +46,12 @@ const LoginScreen = () => {
 
   const handleLogin = () => {
     if (validateInput()) {
-      const formattedIdentifier =
-        /^\d{10}$/.test(identifier) && selectedCountry.code
-          ? `${selectedCountry.code}${identifier}`
-          : identifier;
-
-      console.log("Logging in with:", formattedIdentifier, "Password:", password);
+      console.log(
+        "Logging in with:",
+        selectedCountry.code + phoneNumber,
+        "Password:",
+        password
+      );
       router.push("/home");
     }
   };
@@ -79,25 +78,25 @@ const LoginScreen = () => {
           <Text style={styles.subtitle}>Sign in to your account</Text>
 
           <View style={styles.inputContainer}>
-            {/^\d{10}$/.test(identifier) && (
-              <TouchableOpacity
-                style={styles.countryButton}
-                onPress={() => setModalVisible(true)}
-              >
-                <Text style={styles.countryButtonText}>
-                  {selectedCountry.code}
-                </Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={styles.countryButton}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text style={styles.countryButtonText}>
+                {selectedCountry.code}
+              </Text>
+            </TouchableOpacity>
 
             <TextInput
               style={styles.input}
               placeholder="Enter email or phone number"
-              value={identifier}
+              keyboardType="phone-pad"
+              value={phoneNumber}
               onChangeText={(text) => {
-                setIdentifier(text);
+                setPhoneNumber(text);
                 setError("");
               }}
+              maxLength={10}
             />
           </View>
 
@@ -160,7 +159,132 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  // Keep all styles unchanged
+  container: {
+    flex: 1,
+    backgroundColor: "#161622",
+  },
+  scrollContainer: {
+    paddingHorizontal: 16,
+  },
+  formWrapper: {
+    marginTop: 32,
+  },
+  title: {
+    fontSize: 24,
+    color: "#ffffff",
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#9ca3af",
+    marginBottom: 32,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    marginBottom: 16,
+  },
+  countryButton: {
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    padding: 16,
+    borderRadius: 8,
+    marginRight: 8,
+    justifyContent: "center",
+    backgroundColor: "#1f1f1f",
+  },
+  countryButtonText: {
+    fontSize: 16,
+    color: "#ffffff",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    padding: 16,
+    borderRadius: 8,
+    fontSize: 16,
+    backgroundColor: "#1f1f1f",
+    color: "#ffffff",
+  },
+  passwordInput: {
+    marginTop: 16,
+  },
+  errorText: {
+    color: "#ff0000",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  button: {
+    backgroundColor: "#4f46e5",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  registerRedirectContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  registerRedirectText: {
+    color: "#9ca3af",
+  },
+  registerRedirectLink: {
+    color: "#4f46e5",
+    fontWeight: "500",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: "80%",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  countryItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 16,
+  },
+  countryName: {
+    fontSize: 16,
+    color: "#1F2937",
+  },
+  countryCode: {
+    fontSize: 16,
+    color: "#6B7280",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+  },
+  closeButton: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: "#1F2937",
+  },
 });
 
 export default LoginScreen;

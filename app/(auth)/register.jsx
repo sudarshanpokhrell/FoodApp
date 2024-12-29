@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
-import { KeyboardAvoidingView, Platform,Keyboard } from "react-native";
+import { KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
+import FormComponent from "./FormComponent";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
-    email:"",
+    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -17,7 +18,7 @@ const Register = () => {
   const [errors, setErrors] = useState({
     fullName: "",
     phone: "",
-    email:"",
+    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -27,49 +28,47 @@ const Register = () => {
     const newErrors = {
       fullName: "",
       phone: "",
-      email:"",
+      email: "",
       password: "",
       confirmPassword: "",
     };
 
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
-      isValid = true;
+      isValid = false;
     }
 
-    // Phone validation
-    const phoneRegex = /^\d{10}$/; 
+    const phoneRegex = /^\d{10}$/;
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
-      isValid = true;
+      isValid = false;
     } else if (!phoneRegex.test(formData.phone)) {
       newErrors.phone = "Invalid phone number format";
-      isValid = true;
+      isValid = false;
     }
+
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
-      isValid = true;
+      isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Invalid email address";
-      isValid = true;
+      isValid = false;
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
-      isValid = true;
+      isValid = false;
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
-      isValid = true;
+      isValid = false;
     }
 
-    // Confirm Password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-      isValid = true;
+      isValid = false;
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
-      isValid = true;
+      isValid = false;
     }
 
     setErrors(newErrors);
@@ -83,103 +82,41 @@ const Register = () => {
     }
   };
 
-  const InputField = ({ placeholder, value, onChangeText, secureTextEntry, error }) => (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={[
-          styles.input,
-          error && styles.inputError
-        ]}
-        placeholder={placeholder}
-        placeholderTextColor="#9ca3af"
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={secureTextEntry}
-        keyboardType={placeholder === "Phone Number" ? "phone-pad" : "default"}
-      />
-      {error ? (
-        <Text style={styles.errorText}>{error}</Text>
-      ) : null}
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
-    <StatusBar style="light" backgroundColor="#161622" />
-    <KeyboardAvoidingView 
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formWrapper}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Sign up now to get started with an account</Text>
+      <StatusBar style="light" backgroundColor="#161622" />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+            <View style={styles.formWrapper}>
+              <Text style={styles.title}>Create Account</Text>
+              <Text style={styles.subtitle}>Sign up now to get started with an account</Text>
 
-          <InputField
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChangeText={(text) => 
-              setFormData({ ...formData, fullName: text })
-            }
-            error={errors.fullName}
-          />
+              <FormComponent
+                formData={formData}
+                setFormData={setFormData}
+                errors={errors}
+              />
 
-          <InputField
-            placeholder="Phone Number"
-            value={formData.phone}
-            onChangeText={(text) => 
-              setFormData({ ...formData, phone: text })
-            }
-            error={errors.phone}
-          />
+              <TouchableOpacity onPress={handleRegister} style={styles.button}>
+                <Text style={styles.buttonText}>Create Account</Text>
+              </TouchableOpacity>
 
-          <InputField
-            placeholder="Email"
-            value={formData.email}
-            onChangeText={(text) => 
-              setFormData({ ...formData, email: text })
-            }
-            error={errors.email}
-          />
-
-          <InputField
-            placeholder="Password"
-            value={formData.password}
-            onChangeText={(text) => 
-              setFormData({ ...formData, password: text })
-            }
-            secureTextEntry
-            error={errors.password}
-          />
-
-          <InputField
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChangeText={(text) =>
-              setFormData({ ...formData, confirmPassword: text })
-            }
-            secureTextEntry
-            error={errors.confirmPassword}
-          />
-
-          <TouchableOpacity
-            onPress={handleRegister}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Create Account</Text>
-          </TouchableOpacity>
-
-          <View style={styles.loginRedirectContainer}>
-            <Text style={styles.loginRedirectText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => router.push("/login")}>
-              <Text style={styles.loginRedirectLink}>Login</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </SafeAreaView>
-);
+              <View style={styles.loginRedirectContainer}>
+                <Text style={styles.loginRedirectText}>Already have an account? </Text>
+                <TouchableOpacity onPress={() => router.push("/login")}>
+                  <Text style={styles.loginRedirectLink}>Login</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -203,24 +140,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#9ca3af",
     marginBottom: 32,
-  },
-  inputContainer: {
-    marginBottom: 16,
-  },
-  input: {
-    backgroundColor: "#1f1f1f",
-    padding: 12,
-    borderRadius: 8,
-    color: "#ffffff",
-  },
-  inputError: {
-    borderColor: "#ff0000",
-    borderWidth: 1,
-  },
-  errorText: {
-    color: "#ff0000",
-    fontSize: 12,
-    marginTop: 4,
   },
   button: {
     backgroundColor: "#4f46e5",
