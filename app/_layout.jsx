@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 // import "react-native-url-polyfill/auto";
 import { SplashScreen, Stack } from "expo-router";
-
+import "../global.css";
 // import GlobalProvider from "../context/GlobalProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.

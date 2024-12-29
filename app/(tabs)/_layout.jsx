@@ -1,32 +1,26 @@
 import { StatusBar } from "expo-status-bar";
-import { Redirect, Tabs } from "expo-router";
-import { Image, Text, View } from "react-native";
+import { Tabs } from "expo-router";
+import { Image, Text, View, StyleSheet } from "react-native";
 import { icons } from "../../constants";
 
-
-
+// TabIcon component
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
-    <View className="flex items-center justify-center gap-2">
+    <View style={styles.tabIconContainer}>
       <Image
         source={icon}
         resizeMode="contain"
-        tintColor={color}
-        className="w-6 h-6"
+        style={[styles.tabIcon, { tintColor: color }]}
       />
-      <Text
-        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
-        style={{ color: color }}
-      >
+      <Text style={[styles.tabText, focused && styles.tabTextFocused, { color }]}>
         {name}
       </Text>
     </View>
   );
 };
 
+// TabLayout component
 const TabLayout = () => {
-
-
   return (
     <>
       <Tabs
@@ -34,12 +28,7 @@ const TabLayout = () => {
           tabBarActiveTintColor: "#FFA001",
           tabBarInactiveTintColor: "#CDCDE0",
           tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: "#161622",
-            borderTopWidth: 1,
-            borderTopColor: "#232533",
-            height: 84,
-          },
+          tabBarStyle: styles.tabBarStyle,
         }}
       >
         <Tabs.Screen
@@ -72,7 +61,6 @@ const TabLayout = () => {
             ),
           }}
         />
-
         <Tabs.Screen
           name="cart"
           options={{
@@ -105,10 +93,35 @@ const TabLayout = () => {
         />
       </Tabs>
 
-      {/* <Loader isLoading={loading} /> */}
       <StatusBar backgroundColor="#161622" style="light" />
     </>
   );
 };
+
+// Styles using StyleSheet.create()
+const styles = StyleSheet.create({
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+  },
+  tabIcon: {
+    width: 24,
+    height: 24,
+  },
+  tabText: {
+    fontSize: 10,
+    fontFamily: 'PRegular',  // Replace with your actual font name
+  },
+  tabTextFocused: {
+    fontFamily: 'PSemibold',  // Replace with your actual font name
+  },
+  tabBarStyle: {
+    backgroundColor: "#161622",
+    borderTopWidth: 1,
+    borderTopColor: "#232533",
+    height: 84,
+  },
+});
 
 export default TabLayout;
