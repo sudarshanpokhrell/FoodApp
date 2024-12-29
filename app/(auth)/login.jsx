@@ -25,14 +25,19 @@ const countryCodes = [
 
 const LoginScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(countryCodes[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const [error, setError] = useState("");
 
-  const validatePhoneNumber = () => {
+  const validateInput = () => {
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       setError("Please enter a valid 10-digit phone number");
+      return false;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
       return false;
     }
     setError("");
@@ -40,10 +45,15 @@ const LoginScreen = () => {
   };
 
   const handleLogin = () => {
-    if (validatePhoneNumber()) {
-      console.log("Logging in with:", selectedCountry.code + phoneNumber);
+    if (validateInput()) {
+      console.log(
+        "Logging in with:",
+        selectedCountry.code + phoneNumber,
+        "Password:",
+        password
+      );
       // Navigate to a different page after successful login
-      router.push("/dashboard");
+      router.push("/home");
     }
   };
 
@@ -73,7 +83,9 @@ const LoginScreen = () => {
               style={styles.countryButton}
               onPress={() => setModalVisible(true)}
             >
-              <Text style={styles.countryButtonText}>{selectedCountry.code}</Text>
+              <Text style={styles.countryButtonText}>
+                {selectedCountry.code}
+              </Text>
             </TouchableOpacity>
 
             <TextInput
@@ -89,6 +101,17 @@ const LoginScreen = () => {
             />
           </View>
 
+          <TextInput
+            style={[styles.input, styles.passwordInput]}
+            placeholder="Enter password"
+            secureTextEntry
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              setError("");
+            }}
+          />
+
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
@@ -96,7 +119,9 @@ const LoginScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.registerRedirectContainer}>
-            <Text style={styles.registerRedirectText}>Don’t have an account? </Text>
+            <Text style={styles.registerRedirectText}>
+              Don’t have an account?{" "}
+            </Text>
             <TouchableOpacity onPress={() => router.push("/register")}>
               <Text style={styles.registerRedirectLink}>Register</Text>
             </TouchableOpacity>
@@ -182,6 +207,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: "#1f1f1f",
     color: "#ffffff",
+  },
+  passwordInput: {
+    marginTop: 16,
   },
   errorText: {
     color: "#ff0000",
