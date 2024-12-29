@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
 
   // Achievement styles
   achievementContainer: {
-    height: 130,
+    height: 140,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",

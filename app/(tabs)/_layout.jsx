@@ -12,7 +12,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
         resizeMode="contain"
         style={[styles.tabIcon, { tintColor: color }]}
       />
-      <Text style={[styles.tabText, focused && styles.tabTextFocused, { color }]}>
+      <Text
+        style={[styles.tabText, focused && styles.tabTextFocused, { color }]}
+      >
         {name}
       </Text>
     </View>
@@ -61,6 +63,7 @@ const TabLayout = () => {
             ),
           }}
         />
+
         <Tabs.Screen
           name="cart"
           options={{
@@ -76,6 +79,7 @@ const TabLayout = () => {
             ),
           }}
         />
+
         <Tabs.Screen
           name="profile"
           options={{
@@ -98,11 +102,10 @@ const TabLayout = () => {
   );
 };
 
-// Styles using StyleSheet.create()
 const styles = StyleSheet.create({
   tabIconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: 2,
   },
   tabIcon: {
@@ -111,10 +114,10 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 10,
-    fontFamily: 'PRegular',  // Replace with your actual font name
+    fontFamily: "PRegular", // Replace with your actual font name
   },
   tabTextFocused: {
-    fontFamily: 'PSemibold',  // Replace with your actual font name
+    fontFamily: "PSemibold", // Replace with your actual font name
   },
   tabBarStyle: {
     backgroundColor: "#161622",

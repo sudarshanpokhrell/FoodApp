@@ -7,28 +7,53 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: '1',
-      name: 'Roll with shrimp',
-      price: 2.90,
-      quantity: 2,
-      image: 'https://int.japanesetaste.com/cdn/shop/articles/how-to-make-makizushi-sushi-rolls-japanese-taste.jpg?v=1707914944&width=5760',
+      name: 'Spicy Tuna Roll',
+      price: 12.90,
+      quantity: 1,
+      xpReward: 25,
+      category: 'Popular',
+      image: 'https://example.com/sushi1.jpg',
     },
     {
       id: '2',
-      name: 'Nigiri special',
-      price: 4.20,
-      quantity: 1,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuwPJGpLvXKp_rD42RKj1jXYXNGzatHHz3sQ&s',
+      name: 'Dragon Roll Special',
+      price: 16.50,
+      quantity: 2,
+      xpReward: 35,
+      category: 'Special',
+      image: 'https://example.com/sushi2.jpg',
     },
+    {
+      id: '3',
+      name: 'Miso Ramen',
+      price: 14.90,
+      quantity: 1,
+      xpReward: 30,
+      category: 'Hot',
+      image: 'https://example.com/ramen.jpg',
+    },
+    {
+      id: '4',
+      name: 'Tempura Udon',
+      price: 13.90,
+      quantity: 1,
+      xpReward: 28,
+      category: 'Hot',
+      image: 'https://example.com/udon.jpg',
+    }
   ]);
 
   const [promoCode, setPromoCode] = useState('');
+  const [userLevel] = useState(5); // Simulated user level
+  const [currentXP] = useState(1200); // Simulated current XP
 
   const updateQuantity = (id, change) => {
     setCartItems(prevItems =>
@@ -42,10 +67,72 @@ const Cart = () => {
     );
   };
 
+  // Calculate order totals and XP
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = 2.00;
   const discount = 0;
   const total = subtotal + deliveryFee - discount;
+  
+  // XP Calculations
+  const baseXP = cartItems.reduce((sum, item) => sum + (item.xpReward * item.quantity), 0);
+  const orderSizeBonus = subtotal > 50 ? 50 : subtotal > 30 ? 25 : 0;
+  const levelBonus = Math.floor(userLevel * 5); // 5 bonus XP per user level
+  const totalXP = baseXP + orderSizeBonus + levelBonus;
+
+  // XP Milestone rewards
+  const xpMilestones = [
+    { threshold: 1500, reward: "🎉 Silver Status" },
+    { threshold: 2000, reward: "🌟 Gold Status" },
+    { threshold: 3000, reward: "💎 Diamond Status" }
+  ];
+
+  const getNextMilestone = () => {
+    const nextMilestone = xpMilestones.find(m => (currentXP + totalXP) < m.threshold);
+    return nextMilestone || xpMilestones[xpMilestones.length - 1];
+  };
+
+  const handleCheckout = () => {
+    const nextMilestone = getNextMilestone();
+    const xpAfterOrder = currentXP + totalXP;
+    
+    let message = `Order Total: $${total.toFixed(2)}\n\nXP Breakdown:\n`;
+    message += `Base XP: ${baseXP}\n`;
+    message += `Order Size Bonus: +${orderSizeBonus}\n`;
+    message += `Level ${userLevel} Bonus: +${levelBonus}\n`;
+    message += `Total XP: ${totalXP}\n\n`;
+    
+    if (nextMilestone && xpAfterOrder < nextMilestone.threshold) {
+      message += `${nextMilestone.threshold - xpAfterOrder} XP until ${nextMilestone.reward}!`;
+    } else if (nextMilestone) {
+      message += `🎊 Congratulations! You'll unlock ${nextMilestone.reward}!`;
+    }
+
+    Alert.alert(
+      "Confirm Order",
+      message,
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Place Order", onPress: () => console.log("Order placed!") }
+      ]
+    );
+  };
+
+  const XPProgressBar = ({ currentXP, earnedXP }) => {
+    const nextMilestone = getNextMilestone();
+    const progress = ((currentXP + earnedXP) / nextMilestone.threshold) * 100;
+    
+    return (
+      <View style={styles.xpProgressContainer}>
+        <View style={styles.xpIcon}>
+          <MaterialCommunityIcons name="lightning-bolt" size={20} color="#FFD700" />
+        </View>
+        <View style={styles.xpBarContainer}>
+          <View style={[styles.xpBar, { width: `${Math.min(progress, 100)}%` }]} />
+        </View>
+        <Text style={styles.xpText}>+{earnedXP} XP</Text>
+      </View>
+    );
+  };
 
   const renderCartItem = (item) => (
     <View key={item.id} style={styles.cartItem}>
@@ -55,8 +142,17 @@ const Cart = () => {
         defaultSource={{uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}}
       />
       <View style={styles.itemInfo}>
-        <Text style={styles.itemName}>{item.name}</Text>
+        <View style={styles.itemHeader}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <View style={styles.categoryBadge}>
+            <Text style={styles.categoryText}>{item.category}</Text>
+          </View>
+        </View>
         <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+        <View style={styles.xpBadge}>
+          <MaterialCommunityIcons name="lightning-bolt" size={12} color="#FFD700" />
+          <Text style={styles.xpBadgeText}>+{item.xpReward} XP</Text>
+        </View>
       </View>
       <View style={styles.quantityControls}>
         <TouchableOpacity
@@ -83,19 +179,22 @@ const Cart = () => {
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Your food cart</Text>
+        <View style={styles.levelBadge}>
+          <Text style={styles.levelText}>Lvl {userLevel}</Text>
+        </View>
       </View>
 
-      <View style={styles.deliverySection}>
-        <View style={styles.deliveryHeader}>
-          <Text style={styles.deliveryTitle}>Deliver to</Text>
-          <TouchableOpacity>
-            <Text style={styles.changeButton}>Change</Text>
-          </TouchableOpacity>
+      <View style={styles.xpCard}>
+        <View style={styles.xpCardHeader}>
+          <Text style={styles.xpCardTitle}>Order Rewards</Text>
+          <View style={styles.bonusBadge}>
+            <Text style={styles.bonusText}>+{levelBonus} Level Bonus</Text>
+          </View>
         </View>
-        <View style={styles.addressContainer}>
-          <Ionicons name="location-outline" size={24} color="#666" />
-          <Text style={styles.addressText}>242 ST Marks Eve, Finland</Text>
-        </View>
+        <XPProgressBar currentXP={currentXP} earnedXP={totalXP} />
+        <Text style={styles.xpCardSubtitle}>
+          {getNextMilestone().threshold - (currentXP + totalXP)} XP until {getNextMilestone().reward}
+        </Text>
       </View>
 
       <ScrollView style={styles.cartItemsContainer}>
@@ -126,12 +225,10 @@ const Cart = () => {
           <Text style={styles.summaryText}>Delivery Fee</Text>
           <Text style={styles.summaryValue}>${deliveryFee.toFixed(2)}</Text>
         </View>
-        {discount > 0 && (
+        {orderSizeBonus > 0 && (
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryText}>Discount</Text>
-            <Text style={[styles.summaryValue, styles.discountText]}>
-              -${discount.toFixed(2)}
-            </Text>
+            <Text style={styles.summaryText}>Order Size XP Bonus</Text>
+            <Text style={[styles.summaryValue, styles.bonusText]}>+{orderSizeBonus} XP</Text>
           </View>
         )}
         <View style={[styles.summaryRow, styles.totalRow]}>
@@ -140,8 +237,11 @@ const Cart = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.checkoutButton}>
-        <Text style={styles.checkoutButtonText}>Proceed to Payment</Text>
+      <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+        <MaterialCommunityIcons name="lightning-bolt" size={20} color="#FFF" />
+        <Text style={styles.checkoutButtonText}>
+          Checkout & Earn {totalXP} XP
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -164,40 +264,88 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   headerTitle: {
+    flex: 1,
     fontSize: 20,
     fontWeight: '600',
   },
-  deliverySection: {
-    backgroundColor: '#fff',
-    padding: 20,
-    marginBottom: 10,
+  levelBadge: {
+    backgroundColor: '#FFA500',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
   },
-  deliveryHeader: {
+  levelText: {
+    color: '#FFF',
+    fontWeight: '600',
+  },
+  xpCard: {
+    backgroundColor: '#FFF',
+    margin: 20,
+    padding: 15,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  xpCardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
-  deliveryTitle: {
-    fontSize: 16,
+  xpCardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  bonusBadge: {
+    backgroundColor: '#FFE4B5',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  bonusText: {
+    color: '#FFA500',
     fontWeight: '600',
+    fontSize: 12,
   },
-  changeButton: {
-    color: '#7b61ff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  addressContainer: {
+  xpProgressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginVertical: 10,
   },
-  addressText: {
-    marginLeft: 10,
+  xpIcon: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#FFA500',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  xpBarContainer: {
+    flex: 1,
+    height: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
+    marginRight: 10,
+  },
+  xpBar: {
+    height: '100%',
+    backgroundColor: '#FFA500',
+    borderRadius: 4,
+  },
+  xpText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFA500',
+  },
+  xpCardSubtitle: {
     fontSize: 14,
     color: '#666',
-  },
-  cartItemsContainer: {
-    flex: 1,
+    marginTop: 5,
   },
   cartItem: {
     flexDirection: 'row',
@@ -215,14 +363,46 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 15,
   },
+  itemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   itemName: {
     fontSize: 16,
     fontWeight: '500',
-    marginBottom: 4,
+    flex: 1,
+  },
+  categoryBadge: {
+    backgroundColor: '#F0F0F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginLeft: 8,
+  },
+  categoryText: {
+    fontSize: 12,
+    color: '#666',
   },
   itemPrice: {
     fontSize: 14,
-    color: '#7b61ff',
+    color: '#FFA500',
+    fontWeight: '600',
+  },
+  xpBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF9E6',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  xpBadgeText: {
+    fontSize: 12,
+    color: '#FFA500',
+    marginLeft: 4,
     fontWeight: '600',
   },
   quantityControls: {
@@ -231,92 +411,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8fc',
     borderRadius: 20,
     padding: 5,
-  },
-  quantityButton: {
-    padding: 5,
-  },
-  quantityText: {
-    paddingHorizontal: 10,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  promoContainer: {
-    flexDirection: 'row',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  promoInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f8fc',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginRight: 10,
-  },
-  promoInput: {
-    flex: 1,
-    marginLeft: 10,
-    height: 40,
-  },
-  applyButton: {
-    backgroundColor: '#7b61ff',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  summary: {
-    backgroundColor: '#fff',
-    padding: 20,
-    marginTop: 10,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  summaryText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  summaryValue: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  discountText: {
-    color: '#4CAF50',
-  },
-  totalRow: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  totalText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  totalAmount: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#7b61ff',
-  },
-  checkoutButton: {
-    backgroundColor: '#7b61ff',
-    margin: 20,
-    padding: 18,
-    borderRadius: 15,
-    alignItems: 'center',
-  },
-  checkoutButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  }
 });
-
-export default Cart;
