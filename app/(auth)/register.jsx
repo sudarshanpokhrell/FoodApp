@@ -38,7 +38,7 @@ const Register = () => {
     }
 
     // Phone validation
-    const phoneRegex = /^\d{10}$/; // Adjust for specific country formats if needed
+    const phoneRegex = /^\d{10}$/; 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
       isValid = true;
