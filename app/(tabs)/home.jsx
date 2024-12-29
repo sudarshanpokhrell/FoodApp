@@ -145,7 +145,10 @@ const Home = () => {
   );
 
   const renderRestaurantItem = ({ item }) => (
-    <TouchableOpacity style={styles.restaurantCard} onPress={() => router.push(`/restaurant/${item.id}`)}>
+    <TouchableOpacity
+      style={styles.restaurantCard}
+      onPress={() => router.push(`/restaurant/${item.id}`)}
+    >
       <View style={styles.restaurantContent}>
         <Image
           source={{ uri: item.image }}
@@ -162,14 +165,20 @@ const Home = () => {
 
           <Text style={styles.restaurantCuisine}>{item.cuisine}</Text>
           <View style={styles.restaurantDetails}>
-            <View style={styles.ratingContainer}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ionicons name="star" size={16} color="#FFD700" />
               <Text style={styles.ratingText}>{item.rating}</Text>
             </View>
-            <Text style={styles.restaurantTime}>
-              <Ionicons name="time-outline" size={16} color="#666" />{" "}
-              {item.time}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 12,
+              }}
+            >
+              <Ionicons name="time-outline" size={16} color="#666" />
+              <Text style={styles.restaurantTime}>{item.time}</Text>
+            </View>
           </View>
         </View>
       </View>
