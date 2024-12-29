@@ -9,18 +9,23 @@ import {
   ScrollView,
   SafeAreaView,
   StyleSheet,
+  Image,
+  Dimensions,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+
+const { width } = Dimensions.get("window");
 
 const countryCodes = [
-  { code: "+977", country: "Nepal" },
-  { code: "+1", country: "United States" },
-  { code: "+44", country: "United Kingdom" },
-  { code: "+91", country: "India" },
-  { code: "+86", country: "China" },
-  { code: "+81", country: "Japan" },
-  { code: "+61", country: "Australia" },
+  { code: "+977", country: "Nepal", flag: "🇳🇵" },
+  { code: "+1", country: "United States", flag: "🇺🇸" },
+  { code: "+44", country: "United Kingdom", flag: "🇬🇧" },
+  { code: "+91", country: "India", flag: "🇮🇳" },
+  { code: "+86", country: "China", flag: "🇨🇳" },
+  { code: "+81", country: "Japan", flag: "🇯🇵" },
+  { code: "+61", country: "Australia", flag: "🇦🇺" },
 ];
 
 const LoginScreen = () => {
@@ -33,7 +38,7 @@ const LoginScreen = () => {
   const validateInput = () => {
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
-      setError("Please enter a valid email or phone number");
+      setError("Please enter a valid phone number");
       return false;
     }
     if (password.length < 6) {
@@ -46,12 +51,6 @@ const LoginScreen = () => {
 
   const handleLogin = () => {
     if (validateInput()) {
-      console.log(
-        "Logging in with:",
-        selectedCountry.code + phoneNumber,
-        "Password:",
-        password
-      );
       router.push("/home");
     }
   };
@@ -64,96 +63,129 @@ const LoginScreen = () => {
         setModalVisible(false);
       }}
     >
-      <Text style={styles.countryName}>{item.country}</Text>
-      <Text style={styles.countryCode}>{item.code}</Text>
+      <Text style={styles.flag}>{item.flag}</Text>
+      <View style={styles.countryInfo}>
+        <Text style={styles.countryName}>{item.country}</Text>
+        <Text style={styles.countryCode}>{item.code}</Text>
+      </View>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" backgroundColor="#161622" />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formWrapper}>
-          <Text style={styles.title}>Login</Text>
-          <Text style={styles.subtitle}>Sign in to your account</Text>
-
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={styles.countryButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.countryButtonText}>
-                {selectedCountry.code}
-              </Text>
-            </TouchableOpacity>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Enter email or phone number"
-              keyboardType="phone-pad"
-              value={phoneNumber}
-              onChangeText={(text) => {
-                setPhoneNumber(text);
-                setError("");
-              }}
-              maxLength={10}
-            />
-          </View>
-
-          <TextInput
-            style={[styles.input, styles.passwordInput]}
-            placeholder="Enter password"
-            secureTextEntry
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              setError("");
-            }}
+      <StatusBar style="light" backgroundColor="#FF5722" />
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        bounces={false}
+      >
+        <View style={styles.headerImage}>
+          <Image
+            source={{ uri: "https://via.placeholder.com/400x200" }}
+            style={styles.image}
+            resizeMode="cover"
           />
-
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Continue</Text>
-          </TouchableOpacity>
-
-          <View style={styles.registerRedirectContainer}>
-            <Text style={styles.registerRedirectText}>
-              Don’t have an account?{" "}
-            </Text>
-            <TouchableOpacity onPress={() => router.push("/register")}>
-              <Text style={styles.registerRedirectLink}>Register</Text>
-            </TouchableOpacity>
+          <View style={styles.overlay} />
+          <View style={styles.headerContent}>
+            <MaterialIcons name="restaurant-menu" size={60} color="#fff" />
+            <Text style={styles.headerTitle}>Welcome Back</Text>
+            <Text style={styles.headerSubtitle}>Sign in to continue</Text>
           </View>
         </View>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Select Country Code</Text>
+        <View style={styles.formContainer}>
+          <View style={styles.formWrapper}>
+            <Text style={styles.sectionTitle}>Login Details</Text>
 
-              <FlatList
-                data={countryCodes}
-                renderItem={renderCountryItem}
-                keyExtractor={(item) => item.code}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
+            <View style={styles.inputContainer}>
+              <TouchableOpacity
+                style={styles.countryButton}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text style={styles.flag}>{selectedCountry.flag}</Text>
+                <Text style={styles.countryButtonText}>
+                  {selectedCountry.code}
+                </Text>
+              </TouchableOpacity>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter phone number"
+                placeholderTextColor="#666"
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                onChangeText={(text) => {
+                  setPhoneNumber(text);
+                  setError("");
+                }}
+                maxLength={10}
               />
+            </View>
 
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Enter password"
+                placeholderTextColor="#666"
+                secureTextEntry
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setError("");
+                }}
+              />
+            </View>
+
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+              <Text style={styles.loginButtonText}>Continue</Text>
+            </TouchableOpacity>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>OR</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.registerRedirectContainer}>
+              <Text style={styles.registerRedirectText}>
+                Don't have an account?{" "}
+              </Text>
+              <TouchableOpacity onPress={() => router.push("/register")}>
+                <Text style={styles.registerRedirectLink}>Register</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Country Code</Text>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.closeButtonText}>Close</Text>
+                <MaterialIcons name="close" size={24} color="#333" />
               </TouchableOpacity>
             </View>
+
+            <FlatList
+              data={countryCodes}
+              renderItem={renderCountryItem}
+              keyExtractor={(item) => item.code}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+            />
           </View>
-        </Modal>
-      </ScrollView>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -161,129 +193,203 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#161622",
+    backgroundColor: "#fff",
   },
   scrollContainer: {
+    flexGrow: 1,
+  },
+  headerImage: {
+    height: 250,
+    position: "relative",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  headerContent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#fff",
+    marginTop: 16,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "#fff",
+    marginTop: 8,
+  },
+  formContainer: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    marginTop: -24,
     paddingHorizontal: 16,
+    paddingTop: 24,
+    flex: 1,
   },
   formWrapper: {
-    marginTop: 32,
+    flex: 1,
   },
-  title: {
-    fontSize: 24,
-    color: "#ffffff",
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#9ca3af",
-    marginBottom: 32,
+    marginBottom: 24,
+    color: "#333",
   },
   inputContainer: {
     flexDirection: "row",
     marginBottom: 16,
+    height: 56, // Fixed height for input container
+  },
+  passwordContainer: {
+    marginBottom: 16,
+    height: 56, // Fixed height for password container
   },
   countryButton: {
     borderWidth: 1,
-    borderColor: "#D1D5DB",
-    padding: 16,
+    borderColor: "#ddd",
+    paddingHorizontal: 12,
     borderRadius: 8,
     marginRight: 8,
-    justifyContent: "center",
-    backgroundColor: "#1f1f1f",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    height: "100%", // Match parent height
+  },
+  flag: {
+    fontSize: 24,
+    marginRight: 8,
   },
   countryButtonText: {
     fontSize: 16,
-    color: "#ffffff",
+    color: "#333",
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#D1D5DB",
-    padding: 16,
+    borderColor: "#ddd",
+    paddingHorizontal: 16,
     borderRadius: 8,
     fontSize: 16,
-    backgroundColor: "#1f1f1f",
-    color: "#ffffff",
+    color: "#333",
+    backgroundColor: "#fff",
+    height: "100%", // Match parent height
   },
   passwordInput: {
-    marginTop: 16,
+    marginBottom: 0,
   },
   errorText: {
-    color: "#ff0000",
-    fontSize: 12,
-    marginTop: 4,
+    color: "#FF5722",
+    fontSize: 14,
+    marginBottom: 16,
   },
-  button: {
-    backgroundColor: "#4f46e5",
+  loginButton: {
+    backgroundColor: "#FF5722",
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 16,
+    height: 56, // Fixed height for button
   },
-  buttonText: {
-    color: "#ffffff",
+  loginButton: {
+    backgroundColor: "#FF5722",
+    height: 56,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loginButtonText: {
+    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#ddd",
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: "#666",
+    fontSize: 14,
   },
   registerRedirectContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 24,
+    alignItems: "center",
   },
   registerRedirectText: {
-    color: "#9ca3af",
+    color: "#666",
+    fontSize: 14,
   },
   registerRedirectLink: {
-    color: "#4f46e5",
+    color: "#FF5722",
     fontWeight: "500",
+    fontSize: 14,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    padding: 24,
     maxHeight: "80%",
   },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  closeButton: {
+    padding: 4,
   },
   countryItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     padding: 16,
+    alignItems: "center",
+  },
+  countryInfo: {
+    marginLeft: 16,
   },
   countryName: {
     fontSize: 16,
-    color: "#1F2937",
+    color: "#333",
+    marginBottom: 4,
   },
   countryCode: {
-    fontSize: 16,
-    color: "#6B7280",
+    fontSize: 14,
+    color: "#666",
   },
   separator: {
     height: 1,
-    backgroundColor: "#E5E7EB",
-  },
-  closeButton: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: "#F3F4F6",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  closeButtonText: {
-    fontSize: 16,
-    color: "#1F2937",
+    backgroundColor: "#eee",
   },
 });
 
