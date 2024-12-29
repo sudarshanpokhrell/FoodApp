@@ -1,32 +1,60 @@
+import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Link } from "expo-router"; // Import Link instead of using router directly
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Welcome = () => {
   return (
-    <SafeAreaView className="bg-primary h-full">
-      <ScrollView
-        contentContainerStyle={{
-          height: "100%",
-        }}
-      >
-        <View className="w-full flex justify-center items-center h-full px-4">
-          <View className="relative mt-5">
-            <Text className="text-3xl text-white font-bold text-center">
-              Discover Endless{"\n"}
-              Possibilities with{" "}
-              <Text className="text-secondary-200">Aora</Text>
+    <SafeAreaView style={{ backgroundColor: "#161622", flex: 1 }}>
+      <ScrollView contentContainerStyle={{ height: "100%" }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 16,
+          }}
+        >
+          <View style={{ marginTop: 20 }}>
+            <Text
+              style={{
+                fontSize: 24,
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Discover Endless
+            </Text>
+            <Text
+              style={{
+                fontSize: 24,
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Possibilities with <Text style={{ color: "#FF6347" }}>Aora</Text>
             </Text>
           </View>
 
-          <Text className="text-sm font-pregular text-gray-100 mt-7 text-center">
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: "Poppins",
+              color: "#D1D5DB",
+              marginTop: 20,
+              textAlign: "center",
+            }}
+          >
             Where Creativity Meets Innovation: Embark on a Journey of Limitless
             Exploration with Aora
           </Text>
-
-          <Link href="/home" className="mt-4">
-            <Text className="text-white">Click Me!</Text>
+          <Link href="/home" style={{ marginTop: 20 }}>
+            <Text style={{ color: "#FF6347", fontSize: 16 }}>Get Started</Text>
+          </Link>
+          <Link href="/login" style={{ marginTop: 20 }}>
+            <Text style={{ color: "#D1D5DB", fontSize: 16 }}>Login</Text>
           </Link>
         </View>
       </ScrollView>
@@ -35,5 +63,7 @@ const Welcome = () => {
     </SafeAreaView>
   );
 };
+
+
 
 export default Welcome;
