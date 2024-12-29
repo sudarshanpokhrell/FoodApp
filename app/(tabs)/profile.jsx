@@ -1,3 +1,4 @@
+
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -171,5 +172,6 @@ const styles = StyleSheet.create({
     color: "#888",
   },
 });
+
 
 export default ProfileScreen;
