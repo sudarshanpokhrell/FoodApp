@@ -1,12 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { Redirect, router } from "expo-router";
-import { View, Text, Image, ScrollView, SafeAreaViewBase } from "react-native";
+import { Link } from "expo-router"; // Import Link instead of using router directly
+import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Welcome = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
-
       <ScrollView
         contentContainerStyle={{
           height: "100%",
@@ -15,7 +14,7 @@ const Welcome = () => {
         <View className="w-full flex justify-center items-center h-full px-4">
           <View className="relative mt-5">
             <Text className="text-3xl text-white font-bold text-center">
-              Discoverr Endless{"\n"}
+              Discover Endless{"\n"}
               Possibilities with{" "}
               <Text className="text-secondary-200">Aora</Text>
             </Text>
@@ -25,6 +24,10 @@ const Welcome = () => {
             Where Creativity Meets Innovation: Embark on a Journey of Limitless
             Exploration with Aora
           </Text>
+
+          <Link href="/home" className="mt-4">
+            <Text className="text-white">Click Me!</Text>
+          </Link>
         </View>
       </ScrollView>
 
