@@ -1,415 +1,305 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
+  SafeAreaView,
+  StatusBar,
   TouchableOpacity,
-  Image,
+  Modal,
   TextInput,
-  Alert,
-} from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+  Button,
+} from "react-native";
+import CartItem from "../../components/CartItem";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
     {
-      id: '1',
-      name: 'Spicy Tuna Roll',
-      price: 12.90,
+      id: "1",
+      name: "Momo",
+      price: 5.5,
       quantity: 1,
-      xpReward: 25,
-      category: 'Popular',
-      image: 'https://example.com/sushi1.jpg',
+      description:
+        "Steamed dumplings filled with minced chicken and spices, served with spicy achar.",
+      image:
+        "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
     },
     {
-      id: '2',
-      name: 'Dragon Roll Special',
-      price: 16.50,
-      quantity: 2,
-      xpReward: 35,
-      category: 'Special',
-      image: 'https://example.com/sushi2.jpg',
+      id: "2",
+      name: "Dal Bhat Tarkari",
+      price: 7.9,
+      quantity: 1,
+      description:
+        "Traditional Nepali meal with steamed rice, lentil soup, and vegetable curry.",
+      image:
+        "https://www.aroundmanaslutrek.com/wp-content/uploads/2024/07/dal-bhat-tarkari.jpeg",
     },
     {
-      id: '3',
-      name: 'Miso Ramen',
-      price: 14.90,
+      id: "3",
+      name: "Sekuwa",
+      price: 6.5,
       quantity: 1,
-      xpReward: 30,
-      category: 'Hot',
-      image: 'https://example.com/ramen.jpg',
+      description: "Grilled skewered meat marinated in Nepali spices.",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlwkp8SJ7-gORtwhd3RilqkM-k5v_vn1f3KA&s",
     },
-    {
-      id: '4',
-      name: 'Tempura Udon',
-      price: 13.90,
-      quantity: 1,
-      xpReward: 28,
-      category: 'Hot',
-      image: 'https://example.com/udon.jpg',
-    }
   ]);
 
-  const [promoCode, setPromoCode] = useState('');
-  const [userLevel] = useState(5); // Simulated user level
-  const [currentXP] = useState(1200); // Simulated current XP
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [userXP, setUserXP] = useState(500); // Example XP points
+  const [xpDiscount, setXpDiscount] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
 
-  const updateQuantity = (id, change) => {
-    setCartItems(prevItems =>
-      prevItems.map(item => {
-        if (item.id === id) {
-          const newQuantity = Math.max(0, item.quantity + change);
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      }).filter(item => item.quantity > 0)
+  const xpToDiscountRate = 0.01; // 1 XP = Rs. 0.01 discount
+
+  const handleQuantityChange = (id, type) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              quantity:
+                type === "increase"
+                  ? item.quantity + 1
+                  : Math.max(1, item.quantity - 1),
+            }
+          : item
+      )
     );
   };
 
-  // Calculate order totals and XP
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 2.00;
-  const discount = 0;
-  const total = subtotal + deliveryFee - discount;
-  
-  // XP Calculations
-  const baseXP = cartItems.reduce((sum, item) => sum + (item.xpReward * item.quantity), 0);
-  const orderSizeBonus = subtotal > 50 ? 50 : subtotal > 30 ? 25 : 0;
-  const levelBonus = Math.floor(userLevel * 5); // 5 bonus XP per user level
-  const totalXP = baseXP + orderSizeBonus + levelBonus;
-
-  // XP Milestone rewards
-  const xpMilestones = [
-    { threshold: 1500, reward: "🎉 Silver Status" },
-    { threshold: 2000, reward: "🌟 Gold Status" },
-    { threshold: 3000, reward: "💎 Diamond Status" }
-  ];
-
-  const getNextMilestone = () => {
-    const nextMilestone = xpMilestones.find(m => (currentXP + totalXP) < m.threshold);
-    return nextMilestone || xpMilestones[xpMilestones.length - 1];
+  const handleDeleteItem = (id) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
-  const handleCheckout = () => {
-    const nextMilestone = getNextMilestone();
-    const xpAfterOrder = currentXP + totalXP;
-    
-    let message = `Order Total: $${total.toFixed(2)}\n\nXP Breakdown:\n`;
-    message += `Base XP: ${baseXP}\n`;
-    message += `Order Size Bonus: +${orderSizeBonus}\n`;
-    message += `Level ${userLevel} Bonus: +${levelBonus}\n`;
-    message += `Total XP: ${totalXP}\n\n`;
-    
-    if (nextMilestone && xpAfterOrder < nextMilestone.threshold) {
-      message += `${nextMilestone.threshold - xpAfterOrder} XP until ${nextMilestone.reward}!`;
-    } else if (nextMilestone) {
-      message += `🎊 Congratulations! You'll unlock ${nextMilestone.reward}!`;
+  // Calculate the total before applying any discount
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+  };
+
+  const handleApplyVoucher = () => {
+    // Assuming a 10% discount for a valid voucher code
+    if (voucherCode === "DISCOUNT10") {
+      setTotalAmount((prevAmount) => prevAmount * 0.9); // Apply 10% discount
+      alert("Voucher applied! 10% discount added.");
+    } else {
+      alert("Invalid voucher code.");
     }
-
-    Alert.alert(
-      "Confirm Order",
-      message,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Place Order", onPress: () => console.log("Order placed!") }
-      ]
-    );
   };
 
-  const XPProgressBar = ({ currentXP, earnedXP }) => {
-    const nextMilestone = getNextMilestone();
-    const progress = ((currentXP + earnedXP) / nextMilestone.threshold) * 100;
-    
-    return (
-      <View style={styles.xpProgressContainer}>
-        <View style={styles.xpIcon}>
-          <MaterialCommunityIcons name="lightning-bolt" size={20} color="#FFD700" />
-        </View>
-        <View style={styles.xpBarContainer}>
-          <View style={[styles.xpBar, { width: `${Math.min(progress, 100)}%` }]} />
-        </View>
-        <Text style={styles.xpText}>+{earnedXP} XP</Text>
-      </View>
-    );
+  const handleApplyXP = () => {
+    const xpDiscountAmount = userXP * xpToDiscountRate;
+    setXpDiscount(xpDiscountAmount); // Set the XP discount
+    setTotalAmount(calculateTotal() - xpDiscountAmount); // Subtract XP discount from total
+    alert(`XP applied! You get Rs. ${xpDiscountAmount} discount.`);
   };
 
-  const renderCartItem = (item) => (
-    <View key={item.id} style={styles.cartItem}>
-      <Image
-        source={{ uri: item.image }}
-        style={styles.itemImage}
-        defaultSource={{uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}}
-      />
-      <View style={styles.itemInfo}>
-        <View style={styles.itemHeader}>
-          <Text style={styles.itemName}>{item.name}</Text>
-          <View style={styles.categoryBadge}>
-            <Text style={styles.categoryText}>{item.category}</Text>
-          </View>
-        </View>
-        <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-        <View style={styles.xpBadge}>
-          <MaterialCommunityIcons name="lightning-bolt" size={12} color="#FFD700" />
-          <Text style={styles.xpBadgeText}>+{item.xpReward} XP</Text>
-        </View>
-      </View>
-      <View style={styles.quantityControls}>
-        <TouchableOpacity
-          onPress={() => updateQuantity(item.id, -1)}
-          style={styles.quantityButton}
-        >
-          <Ionicons name="remove" size={20} color="#666" />
-        </TouchableOpacity>
-        <Text style={styles.quantityText}>{item.quantity}</Text>
-        <TouchableOpacity
-          onPress={() => updateQuantity(item.id, 1)}
-          style={styles.quantityButton}
-        >
-          <Ionicons name="add" size={20} color="#666" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  const handleApplyDeliveryCharge = () => {
+    setTotalAmount(calculateTotal() + deliveryCharge); // Add delivery charge
+  };
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.container}>
+        <Text style={styles.header}>Your Cart</Text>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          {cartItems.map((item) => (
+            <CartItem
+              key={item.id}
+              item={item}
+              onQuantityChange={handleQuantityChange}
+              onDelete={handleDeleteItem}
+            />
+          ))}
+        </ScrollView>
+
+        {/* Total amount */}
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>Total:</Text>
+          <Text style={styles.totalText}>Rs: {totalAmount || calculateTotal()}</Text>
+        </View>
+
+        {/* Proceed to checkout button */}
+        <TouchableOpacity style={styles.checkoutButton} onPress={openModal}>
+          <Text style={{ fontWeight: "600", fontSize: 16 }}>
+            Proceed to Checkout
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Your food cart</Text>
-        <View style={styles.levelBadge}>
-          <Text style={styles.levelText}>Lvl {userLevel}</Text>
-        </View>
-      </View>
 
-      <View style={styles.xpCard}>
-        <View style={styles.xpCardHeader}>
-          <Text style={styles.xpCardTitle}>Order Rewards</Text>
-          <View style={styles.bonusBadge}>
-            <Text style={styles.bonusText}>+{levelBonus} Level Bonus</Text>
+        {/* Modal for Voucher, Delivery Charge, XP points */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeader}>Checkout Details</Text>
+
+              {/* Voucher Code */}
+              <TextInput
+                style={styles.input}
+                placeholder="Enter voucher code"
+                value={voucherCode}
+                onChangeText={setVoucherCode}
+              />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleApplyVoucher}
+              >
+                <Text>Apply Voucher</Text>
+              </TouchableOpacity>
+
+              {/* Delivery Charge */}
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Delivery Charge"
+                keyboardType="numeric"
+                value={deliveryCharge.toString()}
+                onChangeText={(value) => setDeliveryCharge(Number(value))}
+              />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleApplyDeliveryCharge}
+              >
+                <Text>Apply Delivery Charge</Text>
+              </TouchableOpacity>
+
+              {/* XP Points */}
+              <Text style={styles.xpText}>
+                You have {userXP} XP points available
+              </Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleApplyXP}
+              >
+                <Text>Apply XP Discount</Text>
+              </TouchableOpacity>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={closeModal}>
+                  <Text>Close</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={closeModal}
+                >
+                  <Text>Confirm</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-        <XPProgressBar currentXP={currentXP} earnedXP={totalXP} />
-        <Text style={styles.xpCardSubtitle}>
-          {getNextMilestone().threshold - (currentXP + totalXP)} XP until {getNextMilestone().reward}
-        </Text>
+        </Modal>
       </View>
-
-      <ScrollView style={styles.cartItemsContainer}>
-        {cartItems.map(renderCartItem)}
-      </ScrollView>
-
-      <View style={styles.promoContainer}>
-        <View style={styles.promoInputContainer}>
-          <Ionicons name="ticket-outline" size={20} color="#666" />
-          <TextInput
-            style={styles.promoInput}
-            placeholder="Promo Code"
-            value={promoCode}
-            onChangeText={setPromoCode}
-          />
-        </View>
-        <TouchableOpacity style={styles.applyButton}>
-          <Text style={styles.applyButtonText}>Apply</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.summary}>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryText}>Subtotal</Text>
-          <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
-        </View>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryText}>Delivery Fee</Text>
-          <Text style={styles.summaryValue}>${deliveryFee.toFixed(2)}</Text>
-        </View>
-        {orderSizeBonus > 0 && (
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryText}>Order Size XP Bonus</Text>
-            <Text style={[styles.summaryValue, styles.bonusText]}>+{orderSizeBonus} XP</Text>
-          </View>
-        )}
-        <View style={[styles.summaryRow, styles.totalRow]}>
-          <Text style={styles.totalText}>Total</Text>
-          <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-        <MaterialCommunityIcons name="lightning-bolt" size={20} color="#FFF" />
-        <Text style={styles.checkoutButtonText}>
-          Checkout & Earn {totalXP} XP
-        </Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    padding: 10,
+    paddingTop: 18,
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f8f8fc',
+    paddingTop: 40, // Added some padding at the top to push content down
+    paddingHorizontal: 16,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20, // Increased the margin below the header for more space
+    color: "#1a1a1a",
   },
-  backButton: {
-    marginRight: 15,
-  },
-  headerTitle: {
+  scrollView: {
     flex: 1,
+  },
+  totalText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "bold",
+    color: "#333",
   },
-  levelBadge: {
-    backgroundColor: '#FFA500',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
+  totalContainer: {
+    width: 333,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#e9ecef",
   },
-  levelText: {
-    color: '#FFF',
-    fontWeight: '600',
+  checkoutButton: {
+    backgroundColor: "#FFA500",
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
   },
-  xpCard: {
-    backgroundColor: '#FFF',
-    margin: 20,
-    padding: 15,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  xpCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  xpCardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  bonusBadge: {
-    backgroundColor: '#FFE4B5',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  bonusText: {
-    color: '#FFA500',
-    fontWeight: '600',
-    fontSize: 12,
-  },
-  xpProgressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  xpIcon: {
-    width: 32,
-    height: 32,
-    backgroundColor: '#FFA500',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  xpBarContainer: {
+  modalContainer: {
     flex: 1,
-    height: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-    marginRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  xpBar: {
-    height: '100%',
-    backgroundColor: '#FFA500',
-    borderRadius: 4,
+  modalContent: {
+    width: "80%",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalHeader: {
+    fontSize: 22,
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  input: {
+    width: "100%",
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  button: {
+    backgroundColor: "#FFA500",
+    padding: 10,
+    borderRadius: 5,
+    width: "100%",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   xpText: {
+    marginBottom: 10,
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFA500',
+    color: "#333",
   },
-  xpCardSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 5,
-  },
-  cartItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    marginBottom: 1,
-  },
-  itemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-  },
-  itemInfo: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '500',
-    flex: 1,
-  },
-  categoryBadge: {
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
-    marginLeft: 8,
-  },
-  categoryText: {
-    fontSize: 12,
-    color: '#666',
-  },
-  itemPrice: {
-    fontSize: 14,
-    color: '#FFA500',
-    fontWeight: '600',
-  },
-  xpBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF9E6',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginTop: 4,
-  },
-  xpBadgeText: {
-    fontSize: 12,
-    color: '#FFA500',
-    marginLeft: 4,
-    fontWeight: '600',
-  },
-  quantityControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f8fc',
-    borderRadius: 20,
-    padding: 5,
-  }
 });
+
+export default Cart;
