@@ -17,27 +17,21 @@ const Home = () => {
   const [recommendedItems, setRecommendedItems] = useState([
     {
       id: "1",
-      name: "Roll with shrimp",
-      price: "2.90",
-      rating: "4.5",
+      name: "Momo",
       image:
-        "https://int.japanesetaste.com/cdn/shop/articles/how-to-make-makizushi-sushi-rolls-japanese-taste.jpg?v=1707914944&width=5760",
+        "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
     },
     {
       id: "2",
-      name: "Smoked salmon",
-      price: "3.50",
-      rating: "4.8",
+      name: "Pizza",
       image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsl10M_H1nzIBs_50Hp5WKSv0OG_bNoMM-Jg&s",
+        "https://www.inspiredtaste.net/wp-content/uploads/2023/08/Cheese-Pizza-2-1200.jpg",
     },
     {
       id: "3",
-      name: "Mero special",
-      price: "4.20",
-      rating: "4.6",
+      name: "Briyani",
       image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuwPJGpLvXKp_rD42RKj1jXYXNGzatHHz3sQ&s",
+        "https://dww3ueizok6z0.cloudfront.net/food/banner/193-8e6f5c121411ff2b5a54143fa12a5d126973b2f0",
     },
   ]);
 
@@ -68,6 +62,8 @@ const Home = () => {
       name: "Momo",
       price: "2.90",
       rating: "4.5",
+      restaurantName: "The Gardens", // Added restaurant name
+      address: "123 Main St, Kathmandu", // Added address
       image:
         "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
     },
@@ -76,6 +72,8 @@ const Home = () => {
       name: "Chicken Leg Piece",
       price: "3.50",
       rating: "4.8",
+      restaurantName: "Mero Kitchen", // Added restaurant name
+      address: "456 Thamel, Kathmandu", // Added address
       image:
         "https://www.thespruceeats.com/thmb/Ce9JRCp8CRy0TvjpOMG1_zzhrWE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/terris-crispy-fried-chicken-legs-3056879-hero-01-db3cd6bfead040e6ad07528a162db843.jpg",
     },
@@ -84,6 +82,8 @@ const Home = () => {
       name: "Chicken Pizza",
       price: "4.20",
       rating: "4.6",
+      restaurantName: "Pizza Hub", // Added restaurant name
+      address: "789 Durbar Marg, Kathmandu", // Added address
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Lj3_8eh0xYQLDhyh1pYwOF6l00mL7hIfww&s",
     },
@@ -100,8 +100,7 @@ const Home = () => {
     }
   }, []);
 
-  
-  const renderRecommendedItem = ({ item }) => (
+  const renderRapidFeast = ({ item }) => (
     <TouchableOpacity style={styles.recommendedCard}>
       <Image
         source={{ uri: item.image }}
@@ -119,6 +118,25 @@ const Home = () => {
             <Text style={styles.ratingText}>{item.rating}</Text>
           </View>
         </View>
+        <Text style={styles.restaurantName}>{item.restaurantName}</Text>{" "}
+        {/* Display restaurant name */}
+        <Text style={styles.restaurantAddress}>{item.address}</Text>{" "}
+        {/* Display restaurant address */}
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderRecommendedItem = ({ item }) => (
+    <TouchableOpacity style={styles.recommendedCard}>
+      <Image
+        source={{ uri: item.image }}
+        style={styles.recommendedImage}
+        defaultSource={{
+          uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
+        }} // Add a local placeholder image
+      />
+      <View style={styles.recommendedContent}>
+        <Text style={styles.recommendedName}>{item.name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -150,7 +168,6 @@ const Home = () => {
       </View>
     </TouchableOpacity>
   );
-
 
   return (
     <ScrollView style={styles.container}>
@@ -191,10 +208,11 @@ const Home = () => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.recommendedList}
       />
+
       <Text style={styles.sectionTitle}>Rapid Feast</Text>
       <FlatList
         data={rapidFeast}
-        renderItem={renderRecommendedItem}
+        renderItem={renderRapidFeast}
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -317,6 +335,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
   },
+  restaurantName: {
+    fontSize: 10,
+    fontWeight: "600",
+    marginTop: 8,
+  },
+  restaurantAddress: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 4,
+  },
   restaurantsContainer: {
     paddingHorizontal: 20,
   },
@@ -352,44 +380,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   restaurantImage: {
-    width: 80, // Set a fixed width for the image
-    height: 80, // Set a fixed height for the image
-    borderRadius: 40, // Optional: to make the image round
-    marginRight: 15, // Add some spacing between the image and text
-    backgroundColor: "#f0f0f0", // Optional: background color for loading placeholder
-  },
-
-  restaurantContent: {
-    flexDirection: "row",
-    alignItems: "center", // Align image and text horizontally
-  },
-
-  restaurantInfo: {
-    flex: 1, // Ensures that the text takes up remaining space
-  },
-
-  restaurantName: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-
-  restaurantCuisine: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 8,
-  },
-
-  restaurantDetails: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  restaurantTime: {
-    marginLeft: 12,
-    color: "#666",
-    fontSize: 14,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginRight: 15,
+    backgroundColor: "#f0f0f0",
   },
 });
+
 
 export default Home;
