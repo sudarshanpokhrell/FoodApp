@@ -1,12 +1,27 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Redirect, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
-const Layout = () => {
+const AuthLayout = () => {
   return (
-    <View>
-      <Text>Layout</Text>
-    </View>
-  )
-}
+    <>
+      <Stack>
+        <Stack.Screen
+          name="login"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="register"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
 
-export default Layout
+      <StatusBar backgroundColor="#161622" style="light" />
+    </>
+  );
+};
+
+export default AuthLayout;
