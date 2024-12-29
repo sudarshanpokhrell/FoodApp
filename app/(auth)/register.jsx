@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAvoidingView, Platform,Keyboard } from "react-native";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -32,14 +32,13 @@ const Register = () => {
       confirmPassword: "",
     };
 
-    // Full Name validation
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
       isValid = true;
     }
 
     // Phone validation
-    const phoneRegex = /^\d{10}$/; // Adjust for specific country formats if needed
+    const phoneRegex = /^\d{10}$/; 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
       isValid = true;
@@ -79,9 +78,7 @@ const Register = () => {
 
   const handleRegister = () => {
     if (validateForm()) {
-      // Add your registration logic here
       console.log("Registration data:", formData);
-      // Navigate to verification or login page
       router.push("/preferences");
     }
   };
@@ -109,7 +106,7 @@ const Register = () => {
   return (
     <SafeAreaView style={styles.container}>
     <StatusBar style="light" backgroundColor="#161622" />
-    <KeyboardAvoidingView
+    <KeyboardAvoidingView 
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
