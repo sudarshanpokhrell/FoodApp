@@ -32,10 +32,18 @@ const LoginScreen = () => {
 
   const validateInput = () => {
     const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(phoneNumber)) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   
+    if (!phoneRegex.test(phoneNumber) && !emailRegex.test(phoneNumber)) {
       setError("Please enter a valid email or phone number");
       return false;
     }
+  
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return false;
+    }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return false;
@@ -90,7 +98,7 @@ const LoginScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter email or phone number"
-              keyboardType="phone-pad"
+              keyboardType="default"
               value={phoneNumber}
               onChangeText={(text) => {
                 setPhoneNumber(text);
