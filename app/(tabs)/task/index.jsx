@@ -20,7 +20,7 @@ const Task = () => {
             </Link>
             <Link href="/task/paybill" style={styles.link}>
             <Image
-        source={require("../../../assets/playing.png")} 
+        source={require("../../../assets/playing.png")}   
         style={styles.image}
       />
             </Link>
