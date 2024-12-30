@@ -45,6 +45,17 @@ const Welcome = () => {
           <Image source={require("../assets/icons/logo.png")} style={{ width: 150, height: 150 }} />
 
           <View style={{ marginTop: 20, marginBottom: 40 }}>
+                <Text
+                  style={{
+                    fontSize: 32,
+                    color: COLORS.text,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+               {" "}
+                  <Text style={{ color: COLORS.primary }}>SARAS</Text>
+                </Text>
             <Text
               style={{
                 fontSize: 32,
@@ -54,18 +65,7 @@ const Welcome = () => {
                 marginBottom: 8,
               }}
             >
-              Eat Endless
-            </Text>
-            <Text
-              style={{
-                fontSize: 32,
-                color: COLORS.text,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              Possibilities with{" "}
-              <Text style={{ color: COLORS.primary }}>Eatmandu</Text>
+              Made for your cravings
             </Text>
           </View>
 

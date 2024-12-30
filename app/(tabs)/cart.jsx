@@ -49,11 +49,11 @@ const Cart = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [voucherCode, setVoucherCode] = useState("");
   const [deliveryCharge, setDeliveryCharge] = useState(0);
-  const [userXP, setUserXP] = useState(500); // Example XP points
+  const [userXP, setUserXP] = useState(100); 
   const [xpDiscount, setXpDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const xpToDiscountRate = 0.01; // 1 XP = Rs. 0.01 discount
+  const xpToDiscountRate = 0.01; 
 
   const handleQuantityChange = (id, type) => {
     setCartItems((prevItems) =>
@@ -85,7 +85,7 @@ const Cart = () => {
 
   const handleApplyVoucher = () => {
     if (voucherCode === "DISCOUNT10") {
-      setTotalAmount((prevAmount) => prevAmount * 0.9); // Apply 10% discount
+      setTotalAmount((prevAmount) => prevAmount * 0.9); 
       alert("Voucher applied! 10% discount added.");
     } else {
       alert("Invalid voucher code.");
@@ -96,20 +96,21 @@ const Cart = () => {
     const xpDiscountAmount = userXP * xpToDiscountRate;
     setXpDiscount(xpDiscountAmount); // Set the XP discount
     setTotalAmount(calculateTotal() - xpDiscountAmount); // Subtract XP discount from total
-    alert(`XP applied! You get Rs. Rs.{xpDiscountAmount} discount.`);
+    alert(`XP applied! You get Rs. Rs.${xpDiscountAmount} discount.`);
   };
 
   const handleApplyDeliveryCharge = () => {
     setTotalAmount(calculateTotal() + deliveryCharge); // Add delivery charge
   };
 
-  const openModal = () => {
-    setIsModalVisible(true);
-  };
+const openModal = () => {
+  setIsModalVisible(true);
+};
 
-  const closeModal = () => {
-    setIsModalVisible(false);
-  };
+const closeModal = () => {
+  setIsModalVisible(false);
+};
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -167,23 +168,14 @@ const Cart = () => {
               >
                 <Text style={styles.buttonText}>Apply Voucher</Text>
               </TouchableOpacity>
-
-              {/* Delivery Charge */}
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Delivery Charge"
-                keyboardType="numeric"
-                value={deliveryCharge.toString()}
-                onChangeText={(value) => setDeliveryCharge(Number(value))}
-              />
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleApplyDeliveryCharge}
-              >
-                <Text style={styles.buttonText}>Apply Delivery Charge</Text>
-              </TouchableOpacity>
-
-              {/* XP Points */}
+              <TouchableOpacity style={styles.actionButton} onPress={handleApplyXP}>
+                  <Text style={styles.buttonText}>Apply XP Discount</Text>
+                </TouchableOpacity>
+              <View style={styles.totalContainer}> 
+                <Text style={styles.totalText}>Total:</Text>
+                 <Text style={styles.totalText}> Rs: {totalAmount || calculateTotal()} </Text>
+                </View>
+             
               <Text style={styles.xpText}>
                 You have {userXP} XP points available
               </Text>
@@ -195,14 +187,14 @@ const Cart = () => {
               </TouchableOpacity>
 
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={closeModal}>
-                  <Text style={styles.buttonText}>Close</Text>
-                </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={closeModal}
                 >
                   <Text style={styles.buttonText}>Confirm</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={closeModal}>
+                  <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -300,7 +292,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
   },
