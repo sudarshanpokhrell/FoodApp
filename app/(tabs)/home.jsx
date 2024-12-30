@@ -16,13 +16,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AchievementPopup from "../../components/Popup";
 import FloatingPoll from "../../components/feedback";
 
+
 const Home = () => {
   const [greeting, setGreeting] = useState("");
   const [data, setData] = useState([]);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState([]);
+  const [rapidFeast, setRapidFeast] = useState([]);
 
-  const [pollVisible, setPollVisible] = useState(false);
-
-  const [recommendedItems, setRecommendedItems] = useState([
+  const recommendedItems = [
     {
       id: "1",
       name: "Momo",
@@ -41,6 +42,7 @@ const Home = () => {
       image:
         "https://dww3ueizok6z0.cloudfront.net/food/banner/193-8e6f5c121411ff2b5a54143fa12a5d126973b2f0",
     },
+
   ]);
 
   const [nearbyRestaurants, setNearbyRestaurants] = useState([
@@ -123,6 +125,45 @@ const Home = () => {
     FetchRapidfeast();
     console.log(rapidFeast)
     AsyncStorage.setItem('point','0');
+  ];
+
+  const fetchUserData = async () => {
+    try {
+      const user = JSON.parse(await AsyncStorage.getItem("user"));
+      setData(user.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const fetchNearbyRestaurants = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.16.61:3000/api/v1/resturant"
+      );
+      setNearbyRestaurants(response.data.data);
+    } catch (error) {
+      console.error("Error fetching nearby restaurants:", error);
+    }
+  };
+
+  const fetchRapidFeast = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.16.61:3000/api/v1/food/rapid"
+      );
+      setRapidFeast(response.data.data);
+    } catch (error) {
+      console.error("Error fetching rapid feast items:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+    fetchNearbyRestaurants();
+    fetchRapidFeast();
+
+
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
       setGreeting("Good Morning");
@@ -151,9 +192,11 @@ const Home = () => {
             <Text style={styles.ratingText}>{item.rating}</Text>
           </View>
         </View>
-        <Text style={styles.restaurantName}>{item.restaurantName}</Text>{" "}
+        <Text style={styles.restaurantName}>{item.restaurant.name}</Text>{" "}
         {/* Display restaurant name */}
-        <Text style={styles.restaurantAddress}>{item.address}</Text>{" "}
+        <Text style={styles.restaurantAddress}>
+          {item.restaurant.address}
+        </Text>{" "}
         {/* Display restaurant address */}
       </View>
     </TouchableOpacity>
@@ -177,7 +220,7 @@ const Home = () => {
   const renderRestaurantItem = ({ item }) => (
     <TouchableOpacity
       style={styles.restaurantCard}
-      onPress={() => router.push(`/restaurant/${item.id}`)}
+      onPress={() => router.push(`/restaurant/${item._id}`)}
     >
       <View style={styles.restaurantContent}>
         <Image
@@ -188,28 +231,30 @@ const Home = () => {
           }}
         />
         <View style={styles.restaurantInfo}>
-          <View style={styles.headerRow}>
-            <View style={{ flexDirection: "column", flex: 1 }}>
-              <Text style={styles.restaurantName}>{item.name}</Text>
-              <Text style={styles.restaurantLocation}>{item.location}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => setPollVisible(true)}
-              style={styles.pollButton}
-            >
-              <Ionicons name="bar-chart" size={20} color="#007AFF" />
-            </TouchableOpacity>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.restaurantName}>{item.name}</Text>
+            <Text style={styles.restaurantLocation}>{item.address}</Text>
           </View>
 
-          <Text style={styles.restaurantCuisine}>{item.cuisine}</Text>
+          <Text style={styles.restaurantCuisine}>
+            {item.cuisine.join(" • ")}
+          </Text>
           <View style={styles.restaurantDetails}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ionicons name="star" size={16} color="#FFD700" />
               <Text style={styles.ratingText}>{item.rating}</Text>
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 12 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 12,
+              }}
+            >
               <Ionicons name="time-outline" size={16} color="#666" />
-              <Text style={styles.restaurantTime}>{item.time}</Text>
+              <Text style={styles.restaurantTime}>
+                {item.time || "30-35"} min
+              </Text>
             </View>
           </View>
         </View>
@@ -217,22 +262,12 @@ const Home = () => {
     </TouchableOpacity>
   );
 
-  const [showAchievement, setShowAchievement] = useState(true);
-
-
-  const unlockAchievement = () => {
-    setShowAchievement(true);
-  };
-
-  return (<>
-
+  return (
     <ScrollView style={styles.container}>
-      <FloatingPoll
-        isVisible={pollVisible}
-        onClose={() => setPollVisible(false)}
-      />
       <View style={styles.header}>
-        <Text style={styles.headerText}>{greeting}, {data.fullName}</Text>
+        <Text style={styles.headerText}>
+          {greeting}, {data.fullName}
+        </Text>
         <TouchableOpacity style={styles.profileButton}>
           <Ionicons name="person-circle-outline" size={24} color="#000" />
         </TouchableOpacity>
@@ -241,7 +276,7 @@ const Home = () => {
       <View style={styles.specialOffer}>
         <Text style={styles.offerTitle}>Special Offers</Text>
         <Text style={styles.offerDescription}>
-          Make Rs77+ order and get Caviar Roll for free!
+          Make Rs1000+ order and get 1 plate momo for free!
         </Text>
       </View>
 
@@ -253,7 +288,7 @@ const Home = () => {
           style={styles.searchIcon}
         />
         <TextInput
-          onPress={() => router.push('search')}
+          onPress={() => router.push("search")}
           style={styles.searchInput}
           placeholder="I'd like to have..."
           placeholderTextColor="#666"
@@ -274,7 +309,7 @@ const Home = () => {
       <FlatList
         data={rapidFeast}
         renderItem={renderRapidFeast}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.recommendedList}
@@ -290,7 +325,6 @@ const Home = () => {
         />
       </View>
     </ScrollView>
-  </>
   );
 };
 
@@ -372,15 +406,6 @@ const styles = StyleSheet.create({
   },
   recommendedContent: {
     padding: 12,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  },
-  pollButton: {
-    padding: 8,
-    marginLeft: 8,
   },
   recommendedName: {
     fontSize: 16,

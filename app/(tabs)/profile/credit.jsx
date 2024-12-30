@@ -15,21 +15,16 @@ const Credit = () => {
       onPress={onToggle}
       style={[styles.requirement, isChecked && styles.checked]}
     >
-      <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-        <Text style={styles.checkmark}>{isChecked ? '✓' : ''}</Text>
-      </View>
-      <Text style={styles.requirementText}>{title}</Text>
+      <Text style={styles.requirementText}>
+        ✓ {title}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.rewardText}>2000 XP</Text>
-          <Text style={styles.header}>Buy Food on Credit</Text>
-          <Text style={styles.subText}>Complete all requirements to unlock credit feature</Text>
-        </View>
+        <Text style={styles.header}> Food Credit Verification</Text>
         
         <View style={styles.requirementsContainer}>
           <Text style={styles.subheader}>Requirements</Text>
@@ -57,11 +52,11 @@ const Credit = () => {
         </View>
 
         <TouchableOpacity
-          style={[styles.button, !allRequirementsMet && styles.buttonDisabled]}
-          disabled={!allRequirementsMet}
+          style={[styles.button]}
+         
         >
-          <Text style={[styles.buttonText, !allRequirementsMet && styles.buttonTextDisabled]}>
-            Activate Credit
+          <Text style={[styles.buttonText]}>
+            Get Credit
           </Text>
         </TouchableOpacity>
       </View>
@@ -72,98 +67,61 @@ const Credit = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5EB',
+    backgroundColor: '#f5f5f5',
     padding: 16,
   },
   card: {
     backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#FF8C42',
-    shadowOffset: { width: 0, height: 4 },
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  headerContainer: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  rewardText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FF8C42',
-    marginBottom: 8,
+    shadowRadius: 4,
+    elevation: 3,
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#1A1A1A',
-    marginBottom: 8,
-  },
-  subText: {
-    fontSize: 14,
-    color: '#666',
+    marginBottom: 20,
     textAlign: 'center',
   },
   requirementsContainer: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   subheader: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    marginBottom: 16,
-    color: '#1A1A1A',
+    marginBottom: 12,
   },
   requirement: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#FF8C42',
-    marginRight: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkedBox: {
-    backgroundColor: '#FF8C42',
-  },
-  checkmark: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    borderBottomColor: '#eee',
   },
   checked: {
-    backgroundColor: '#FFF5EB',
+    backgroundColor: '#f8f8f8',
   },
   requirementText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#333',
-    flex: 1,
   },
   button: {
-    backgroundColor: '#FF8C42',
-    borderRadius: 12,
-    padding: 18,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    padding: 16,
     alignItems: 'center',
   },
   buttonDisabled: {
-    backgroundColor: '#FFE0CC',
+    backgroundColor: '#ccc',
   },
   buttonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
   buttonTextDisabled: {
-    color: '#FF8C42',
+    color: '#888',
   },
 });
 
