@@ -17,6 +17,7 @@ import axios from "axios";
 const Home = () => {
   const [greeting, setGreeting] = useState("");
   const [data, setData] = useState([]);
+
   const [recommendedItems, setRecommendedItems] = useState([
     {
       id: "1",
@@ -96,19 +97,26 @@ const Home = () => {
 
   async function UserSetter() {
     const user = JSON.parse(await AsyncStorage.getItem('user'));
-    await setData(user.data)
+    setData(user.data)
   }
 
+
   async function FetchRapidfeast() {
+
     const response= await axios.get('http://192.168.16.75:3000/api/v1/food/rapid',{
       headers: {
         'Content-Type': 'application/json',
         }  
+
     })
 
+    console.log(response.data)
     if(response.status===200){
-     await setRapidFeast(response.data.data)
+     setRapidFeast(response.data.data)
     }
+    
+
+    console.log(rapidFeast)
   }
 
   useEffect(() => {
