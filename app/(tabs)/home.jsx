@@ -212,7 +212,7 @@ const Home = () => {
       <FlatList
         data={recommendedItems}
         renderItem={renderRecommendedItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.recommendedList}
@@ -233,7 +233,7 @@ const Home = () => {
         <FlatList
           data={nearbyRestaurants}
           renderItem={renderRestaurantItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           scrollEnabled={false}
         />
       </View>
