@@ -73,6 +73,7 @@ const RegisterForm = ({ onRegister }) => {
   const handleSubmit = () => {
     if (validateForm()) {
       onRegister(formData);
+      
     }
   };
 

@@ -96,7 +96,7 @@ const Cart = () => {
     const xpDiscountAmount = userXP * xpToDiscountRate;
     setXpDiscount(xpDiscountAmount); // Set the XP discount
     setTotalAmount(calculateTotal() - xpDiscountAmount); // Subtract XP discount from total
-    alert(`XP applied! You get Rs. ${xpDiscountAmount} discount.`);
+    alert(`XP applied! You get Rs. Rs.{xpDiscountAmount} discount.`);
   };
 
   const handleApplyDeliveryCharge = () => {
