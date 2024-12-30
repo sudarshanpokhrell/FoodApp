@@ -28,7 +28,7 @@ const cuisineTypes = [
   { id: 1, name: 'Italian', icon: '🍝' },
   { id: 2, name: 'Chinese', icon: '🥢' },
   { id: 3, name: 'Indian', icon: '🍛' },
-  { id: 4, name: 'Mexican', icon: '🌮' },
+  { id: 4, name: 'Nepali', icon: '🍚' },
   { id: 5, name: 'Japanese', icon: '🍱' },
   { id: 6, name: 'Thai', icon: '🍜' }
 ];

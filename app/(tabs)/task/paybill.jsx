@@ -65,7 +65,6 @@ export default function BillRoulettePage() {
     const payments = Array(numPlayers).fill(0);
     let remaining = total;
 
-    // Distribute random proportions of the total to each player
     for (let i = 0; i < numPlayers - 1; i++) {
       const maxPayment = remaining * (1 - (numPlayers - i - 1) / (numPlayers - i));
       const payment = Math.random() * maxPayment;
@@ -73,7 +72,6 @@ export default function BillRoulettePage() {
       remaining -= payments[i];
     }
     
-    // Last player gets the remainder to ensure total adds up exactly
     payments[numPlayers - 1] = parseFloat(remaining.toFixed(2));
     
     return payments;

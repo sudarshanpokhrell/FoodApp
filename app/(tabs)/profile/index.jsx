@@ -22,7 +22,7 @@ const QuestBox = ({
     <View style={styles.questBox}>
       <View style={styles.questHeader}>
         <MaterialCommunityIcons name="sword-cross" size={24} color="#FFA500" />
-        <Text style={styles.questReward}>+{reward} XP</Text>
+        <Text style={styles.questReward}>+{reward} Coins</Text>
       </View>
       <Text style={styles.questTitle}>{questTitle}</Text>
       <Text style={styles.questDescription}>{questDescription}</Text>
@@ -34,13 +34,12 @@ const QuestBox = ({
   );
 };
 
-// Achievements Component with Animation
 const Achievements = ({
   taskName,
   taskDescription,
   progress,
   xpReward,
-  icon,
+  image,
 }) => {
   return (
     <TouchableOpacity style={styles.achievementContainer}>
@@ -50,11 +49,7 @@ const Achievements = ({
           { backgroundColor: progress === 100 ? "#FFE5B4" : "#f9f9f9" },
         ]}
       >
-        <Ionicons
-          name={icon}
-          size={32}
-          color={progress === 100 ? "#FFD700" : "#FFA500"}
-        />
+        <Image source={image} style={{ width: 40, height: 40 }} />
       </View>
       <View style={styles.achievementInfo}>
         <Text style={styles.achievementTitle}>{taskName}</Text>
@@ -95,14 +90,20 @@ const Profile = () => {
             <Text style={styles.xp}>Coins: 1200 🪙</Text>
             <Text style={styles.joined}>Foodie since Jan 2024</Text>
           </View>
-          <TouchableOpacity style={styles.shareButton}>
-            <Ionicons name="cash-outline" size={24} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.shareButtona}>
-            <Link href='/profile/credit'>
-            <Ionicons name="share-social" size={24} color="#FFF" />
+          <View style={{flexDirection:"column", gap:1}}>
+            <TouchableOpacity
+              onPress={() => router.push("credit")}
+              style={styles.iconButton}
+            >
+              <Ionicons name="cash-outline" size={24} color="#FFF" />
+            </TouchableOpacity>
+
+            <Link href="/profile/credit" asChild>
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="share-social" size={24} color="#FFF" />
+              </TouchableOpacity>
             </Link>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -243,8 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
-    marginLeft:10,
-  
+    marginLeft: 10,
   },
   section: {
     marginTop: 20,
