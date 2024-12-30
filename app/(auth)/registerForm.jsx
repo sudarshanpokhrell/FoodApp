@@ -81,7 +81,7 @@ const RegisterForm = ({ onRegister }) => {
       <TextInput
         style={[styles.input, error && styles.inputError]}
         placeholder={placeholder}
-        placeholderTextColor="#9ca3af"
+        placeholderTextColor="#E1D9D1"
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
-    backgroundColor: "#1f1f1f",
+    backgroundColor: "#E1D9D1",
     padding: 12,
     borderRadius: 8,
     color: "#ffffff",

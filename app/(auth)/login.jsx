@@ -37,10 +37,18 @@ const LoginScreen = () => {
 
   const validateInput = () => {
     const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      setError("Please enter a valid phone number");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   
+    if (!phoneRegex.test(phoneNumber) && !emailRegex.test(phoneNumber)) {
+      setError("Please enter a valid email or phone number");
       return false;
     }
+  
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return false;
+    }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return false;
@@ -107,19 +115,18 @@ const LoginScreen = () => {
                 </Text>
               </TouchableOpacity>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Enter phone number"
-                placeholderTextColor="#666"
-                keyboardType="phone-pad"
-                value={phoneNumber}
-                onChangeText={(text) => {
-                  setPhoneNumber(text);
-                  setError("");
-                }}
-                maxLength={10}
-              />
-            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter email or phone number"
+              keyboardType="default"
+              value={phoneNumber}
+              onChangeText={(text) => {
+                setPhoneNumber(text);
+                setError("");
+              }}
+              maxLength={10}
+            />
+          </View>
 
             <View style={styles.passwordContainer}>
               <TextInput
@@ -251,11 +258,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     marginBottom: 16,
-    height: 56, // Fixed height for input container
+    height: 56, 
   },
   passwordContainer: {
     marginBottom: 16,
-    height: 56, // Fixed height for password container
+    height: 56, 
   },
   countryButton: {
     borderWidth: 1,
@@ -266,7 +273,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    height: "100%", // Match parent height
+    height: "100%", 
   },
   flag: {
     fontSize: 24,
@@ -285,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     backgroundColor: "#fff",
-    height: "100%", // Match parent height
+    height: "100%",
   },
   passwordInput: {
     marginBottom: 0,
