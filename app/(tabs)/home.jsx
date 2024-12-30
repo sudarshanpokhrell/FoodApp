@@ -238,12 +238,14 @@ const Home = () => {
 
       <Text style={styles.sectionTitle}>Nearby Restaurants</Text>
       <View style={styles.restaurantsContainer}>
+        <Text>
         <FlatList
           data={nearbyRestaurants}
           renderItem={renderRestaurantItem}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
-        />
+          />
+      </Text>
       </View>
     </ScrollView>
   );

@@ -7,7 +7,7 @@ const Layout = () => {
       <Stack.Screen
         name="[id]"
         options={{
-          headerShown: false, // Hide the header for the [id] route
+          headerShown: false, 
         }}
       />
 
