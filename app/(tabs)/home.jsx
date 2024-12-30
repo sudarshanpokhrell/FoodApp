@@ -11,10 +11,12 @@ import {
   TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const Home = () => {
   const [greeting, setGreeting] = useState("");
-
+  const [data, setData] = useState([]);
   const [recommendedItems, setRecommendedItems] = useState([
     {
       id: "1",
@@ -92,7 +94,27 @@ const Home = () => {
     },
   ]);
 
+  async function UserSetter() {
+    const user = JSON.parse(await AsyncStorage.getItem('user'));
+    await setData(user.data)
+  }
+
+  async function FetchRapidfeast() {
+    const response= await axios.get('http://192.168.16.75:3000/api/v1/food/rapid',{
+      headers: {
+        'Content-Type': 'application/json',
+        }  
+    })
+
+    if(response.status===200){
+     await setRapidFeast(response.data.data)
+    }
+  }
+
   useEffect(() => {
+    UserSetter();
+    FetchRapidfeast();
+    console.log(rapidFeast)
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
       setGreeting("Good Morning");
@@ -188,7 +210,7 @@ const Home = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>{greeting}, Sanjay!</Text>
+        <Text style={styles.headerText}>{greeting}, {data.fullName}</Text>
         <TouchableOpacity style={styles.profileButton}>
           <Ionicons name="person-circle-outline" size={24} color="#000" />
         </TouchableOpacity>
@@ -209,7 +231,7 @@ const Home = () => {
           style={styles.searchIcon}
         />
         <TextInput
-        onPress={() => router.push('search')}
+          onPress={() => router.push('search')}
           style={styles.searchInput}
           placeholder="I'd like to have..."
           placeholderTextColor="#666"
@@ -238,14 +260,12 @@ const Home = () => {
 
       <Text style={styles.sectionTitle}>Nearby Restaurants</Text>
       <View style={styles.restaurantsContainer}>
-        <Text>
         <FlatList
           data={nearbyRestaurants}
           renderItem={renderRestaurantItem}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
-          />
-      </Text>
+        />
       </View>
     </ScrollView>
   );

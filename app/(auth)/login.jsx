@@ -15,7 +15,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import axios from "axios";
 const { width } = Dimensions.get("window");
 
 const countryCodes = [
@@ -29,8 +29,8 @@ const countryCodes = [
 ];
 
 const LoginScreen = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("9877477474743");
+  const [password, setPassword] = useState("hellworld");
   const [selectedCountry, setSelectedCountry] = useState(countryCodes[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const [error, setError] = useState("");
@@ -38,12 +38,12 @@ const LoginScreen = () => {
   const validateInput = () => {
     const phoneRegex = /^\d{10}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-   
+
     if (!phoneRegex.test(phoneNumber) && !emailRegex.test(phoneNumber)) {
       setError("Please enter a valid email or phone number");
       return false;
     }
-  
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return false;
@@ -57,145 +57,151 @@ const LoginScreen = () => {
     return true;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (validateInput()) {
-      router.push("/home");
-    }
-  };
+      const response = await axios.post('http://localhost:3000/api/v1/user/login', {
+        phoneNumber: phoneNumber,
+        password: password
+      })
+      if (response.status === 200) {
+        router.push("/home");
+      }
+    };
 
-  const renderCountryItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.countryItem}
-      onPress={() => {
-        setSelectedCountry(item);
-        setModalVisible(false);
-      }}
-    >
-      <Text style={styles.flag}>{item.flag}</Text>
-      <View style={styles.countryInfo}>
-        <Text style={styles.countryName}>{item.country}</Text>
-        <Text style={styles.countryCode}>{item.code}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" backgroundColor="#FF5722" />
-      <ScrollView 
-        contentContainerStyle={styles.scrollContainer}
-        bounces={false}
+    const renderCountryItem = ({ item }) => (
+      <TouchableOpacity
+        style={styles.countryItem}
+        onPress={() => {
+          setSelectedCountry(item);
+          setModalVisible(false);
+        }}
       >
-        <View style={styles.headerImage}>
-          <Image
-            source={{ uri: "https://via.placeholder.com/400x200" }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-          <View style={styles.overlay} />
-          <View style={styles.headerContent}>
-            <MaterialIcons name="restaurant-menu" size={60} color="#fff" />
-            <Text style={styles.headerTitle}>Welcome Back</Text>
-            <Text style={styles.headerSubtitle}>Sign in to continue</Text>
-          </View>
+        <Text style={styles.flag}>{item.flag}</Text>
+        <View style={styles.countryInfo}>
+          <Text style={styles.countryName}>{item.country}</Text>
+          <Text style={styles.countryCode}>{item.code}</Text>
         </View>
+      </TouchableOpacity>
+    );
 
-        <View style={styles.formContainer}>
-          <View style={styles.formWrapper}>
-            <Text style={styles.sectionTitle}>Login Details</Text>
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" backgroundColor="#FF5722" />
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          bounces={false}
+        >
+          <View style={styles.headerImage}>
+            <Image
+              source={{ uri: "https://via.placeholder.com/400x200" }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <View style={styles.overlay} />
+            <View style={styles.headerContent}>
+              <MaterialIcons name="restaurant-menu" size={60} color="#fff" />
+              <Text style={styles.headerTitle}>Welcome Back</Text>
+              <Text style={styles.headerSubtitle}>Sign in to continue</Text>
+            </View>
+          </View>
 
-            <View style={styles.inputContainer}>
-              <TouchableOpacity
-                style={styles.countryButton}
-                onPress={() => setModalVisible(true)}
-              >
-                <Text style={styles.flag}>{selectedCountry.flag}</Text>
-                <Text style={styles.countryButtonText}>
-                  {selectedCountry.code}
-                </Text>
+          <View style={styles.formContainer}>
+            <View style={styles.formWrapper}>
+              <Text style={styles.sectionTitle}>Login Details</Text>
+
+              <View style={styles.inputContainer}>
+                <TouchableOpacity
+                  style={styles.countryButton}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Text style={styles.flag}>{selectedCountry.flag}</Text>
+                  <Text style={styles.countryButtonText}>
+                    {selectedCountry.code}
+                  </Text>
+                </TouchableOpacity>
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter email or phone number"
+                  keyboardType="default"
+                  value={phoneNumber}
+                  onChangeText={(text) => {
+                    setPhoneNumber(text);
+                    setError("");
+                  }}
+                  maxLength={10}
+                />
+              </View>
+
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={[styles.input, styles.passwordInput]}
+                  placeholder="Enter password"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    setError("");
+                  }}
+                />
+              </View>
+
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.loginButtonText}>Continue</Text>
               </TouchableOpacity>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Enter email or phone number"
-              keyboardType="default"
-              value={phoneNumber}
-              onChangeText={(text) => {
-                setPhoneNumber(text);
-                setError("");
-              }}
-              maxLength={10}
-            />
-          </View>
+              <View style={styles.divider}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>OR</Text>
+                <View style={styles.dividerLine} />
+              </View>
 
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={[styles.input, styles.passwordInput]}
-                placeholder="Enter password"
-                placeholderTextColor="#666"
-                secureTextEntry
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setError("");
-                }}
+              <View style={styles.registerRedirectContainer}>
+                <Text style={styles.registerRedirectText}>
+                  Don't have an account?{" "}
+                </Text>
+                <TouchableOpacity onPress={() => router.push("/register")}>
+                  <Text style={styles.registerRedirectLink}>Register</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Country Code</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <MaterialIcons name="close" size={24} color="#333" />
+                </TouchableOpacity>
+              </View>
+
+              <FlatList
+                data={countryCodes}
+                renderItem={renderCountryItem}
+                keyExtractor={(item) => item.code}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
               />
             </View>
-
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>Continue</Text>
-            </TouchableOpacity>
-
-            <View style={styles.divider}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            <View style={styles.registerRedirectContainer}>
-              <Text style={styles.registerRedirectText}>
-                Don't have an account?{" "}
-              </Text>
-              <TouchableOpacity onPress={() => router.push("/register")}>
-                <Text style={styles.registerRedirectLink}>Register</Text>
-              </TouchableOpacity>
-            </View>
           </View>
-        </View>
-      </ScrollView>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Country Code</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <MaterialIcons name="close" size={24} color="#333" />
-              </TouchableOpacity>
-            </View>
-
-            <FlatList
-              data={countryCodes}
-              renderItem={renderCountryItem}
-              keyExtractor={(item) => item.code}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-            />
-          </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
-  );
-};
+        </Modal>
+      </SafeAreaView>
+    );
+  };
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -258,11 +264,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     marginBottom: 16,
-    height: 56, 
+    height: 56,
   },
   passwordContainer: {
     marginBottom: 16,
-    height: 56, 
+    height: 56,
   },
   countryButton: {
     borderWidth: 1,
@@ -273,7 +279,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    height: "100%", 
+    height: "100%",
   },
   flag: {
     fontSize: 24,

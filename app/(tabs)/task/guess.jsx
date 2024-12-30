@@ -17,16 +17,11 @@ const NumberQuestGame = () => {
   const generateNewNumber = () => {
     const random = Math.floor(1000 + Math.random() * 9000).toString();
     setTargetNumber(random);
-    console.log(random);
   };
-  
- 
 
   const handleSubmit = () => {
     if (guess.length !== 4) {
       Alert.alert('Invalid Input', 'Please enter a 4-digit number');
-
-
       return;
     }
 
@@ -36,7 +31,6 @@ const NumberQuestGame = () => {
         'You won! Here\'s your 100% off coupon!',
         [{ text: 'OK', onPress: resetGame }]
       );
- 
     } else {
       const newLives = lives - 1;
       setLives(newLives);
@@ -74,7 +68,7 @@ const NumberQuestGame = () => {
 
   const renderHearts = () => {
     return Array(lives)
-      .fill('❤️')
+      .fill('♦')
       .map((heart, index) => (
         <Text key={index} style={styles.heart}>
           {heart}
@@ -101,8 +95,6 @@ const NumberQuestGame = () => {
       </View>
     ));
   };
-console.log(guess);
-console.log(guess);
 
   return (
     <SafeAreaView style={styles.safeArea}>
