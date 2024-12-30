@@ -209,6 +209,7 @@ const Home = () => {
           style={styles.searchIcon}
         />
         <TextInput
+        onPress={() => router.push('search')}
           style={styles.searchInput}
           placeholder="I'd like to have..."
           placeholderTextColor="#666"
