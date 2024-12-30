@@ -266,7 +266,9 @@
               </View>
             </View>
 
-            <View style={styles.tagsRow}>{renderTags()}</View>
+            <View style={styles.tagsRow}>
+              <Text> {renderTags()} </Text> </View>
+             
 
             <Text style={styles.description}>{foodData.description}</Text>
 
@@ -315,13 +317,16 @@
 
             {/* Menu Items */}
             <View style={styles.menuContainer}>
+              <Text>
+
               <FlatList
                 data={filteredItems}
                 renderItem={renderMenuItem}
                 keyExtractor={(item) => item.id}
                 scrollEnabled={false}
                 contentContainerStyle={styles.menuList}
-              />
+                />
+                </Text>
             </View>
 
             <View style={styles.header}>

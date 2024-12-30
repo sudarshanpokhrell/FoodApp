@@ -13,23 +13,74 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 
 const foodCategories = [
-  { id: 1, name: 'Vegetarian', icon: '🥗' },
-  { id: 2, name: 'Non-Vegetarian', icon: '🍖' },
-  { id: 3, name: 'Vegan', icon: '🥬' },
-  { id: 4, name: 'Gluten-Free', icon: '🌾' },
-  { id: 5, name: 'Seafood', icon: '🦐' },
-  { id: 6, name: 'Spicy', icon: '🌶️' },
-  { id: 7, name: 'Desserts', icon: '🍰' },
-  { id: 8, name: 'Fast Food', icon: '🍔' }
+  {
+    "id": 1,
+    "name": "Non-Vegetarian",
+    "icon": "🍖"
+  },
+  {
+    "id": 2,
+    "name": "Vegetarian",
+    "icon": "🥬"
+  },
+  {
+    "id": 3,
+    "name": "Vegan",
+    "icon": "🥬"
+  },
 ];
 
 const cuisineTypes = [
-  { id: 1, name: 'Italian', icon: '🍝' },
-  { id: 2, name: 'Chinese', icon: '🥢' },
-  { id: 3, name: 'Indian', icon: '🍛' },
-  { id: 4, name: 'Mexican', icon: '🌮' },
-  { id: 5, name: 'Japanese', icon: '🍱' },
-  { id: 6, name: 'Thai', icon: '🍜' }
+   {
+      "id": 1,
+      "name": "Momo",
+      "icon": "🥟"
+    },
+    {
+      "id": 2,
+      "name": "Dal Bhat",
+      "icon": "🍛"
+    },
+    {
+      "id": 3,
+      "name": "Sel Roti",
+      "icon": "🍩"
+    },
+    {
+      "id": 4,
+      "name": "Gundruk",
+      "icon": "🥬"
+    },
+    {
+      "id": 5,
+      "name": "Sukuti",
+      "icon": "🍖"
+    },
+    {
+      "id": 6,
+      "name": "Chhoila",
+      "icon": "🍗"
+    },
+    {
+      "id": 7,
+      "name": "Yomari",
+      "icon": "🍯"
+    },
+    {
+      "id": 8,
+      "name": "Newari Khaja Set",
+      "icon": "🍱"
+    },
+    {
+      "id": 9,
+      "name": "Thukpa",
+      "icon": "🍜"
+    },
+    {
+      "id": 10,
+      "name": "Aloo Tama",
+      "icon": "🥔"
+    }
 ];
 
 const FoodPreferencesModal = ({ visible, onClose, onSave }) => {

@@ -202,7 +202,7 @@ export default function BillRoulettePage() {
         <Animated.View style={{ transform: [{ rotate: spin }] }}>
           <MaterialIcons name="casino" size={24} color="white" />
         </Animated.View>
-        <Text style={styles.spinButtonText}>Spin the Roulette</Text>
+        <Text style={styles.spinButtonText}>Test your luck</Text>
       </TouchableOpacity>
 
       {renderResult()}
