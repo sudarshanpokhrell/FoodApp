@@ -87,7 +87,6 @@ const FoodDetailPage = ({ navigation }) => {
       }, 0);
       total += toppingsTotal;
 
-      // Add finishes
       const finishesTotal = selectedFinishes.reduce((sum, finishId) => {
         const finish = customizationOptions.finishes.find(f => f.id === finishId);
         return sum + (finish?.price || 0);
