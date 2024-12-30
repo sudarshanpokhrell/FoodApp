@@ -34,7 +34,7 @@ const Welcome = () => {
                 textAlign: "center",
               }}
             >
-              Possibilities with <Text style={{ color: "#FF6347" }}>Aora</Text>
+              Possibilities with <Text style={{ color: "#FF6347" }}>Spinny</Text>
             </Text>
           </View>
 

@@ -3,124 +3,114 @@ import { Tabs } from "expo-router";
 import { Image, Text, View, StyleSheet } from "react-native";
 import { icons } from "../../constants";
 
-// TabIcon component
-const TabIcon = ({ icon, color, name, focused }) => {
-  return (
-    <View style={styles.tabIconContainer}>
-      <Image
-        source={icon}
-        resizeMode="contain"
-        style={[styles.tabIcon, { tintColor: color }]}
-      />
-      <Text style={[styles.tabText, focused && styles.tabTextFocused, { color }]}>
-        {name}
-      </Text>
-    </View>
-  );
-};
+const TAB_CONFIG = [
+  {
+    name: "home",
+    title: "Home",
+    icon: icons.home,
+  },
+  {
+    name: "task",
+    title: "Task",
+    icon: icons.bookmark,
+  },
+  {
+    name: "cart",
+    title: "Cart",
+    icon: icons.cart,
+  },
+  {
+    name: "profile",
+    title: "Profile",
+    icon: icons.profile,
+  },
+];
 
-// TabLayout component
+const TabIcon = ({ icon, color, name, focused }) => (
+  <View style={[
+    styles.tabIconContainer,
+    focused && styles.tabIconContainerActive
+  ]}>
+    <Image
+      source={icon}
+      resizeMode="contain"
+      style={[
+        styles.tabIcon,
+        { tintColor: focused ? '#FFA001' : '#9999AA' }
+      ]}
+    />
+    <Text
+      style={[
+        styles.tabText,
+        { color: focused ? '#FFA001' : '#9999AA' }
+      ]}
+    >
+      {name}
+    </Text>
+  </View>
+);
+
 const TabLayout = () => {
   return (
     <>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: "#FFA001",
-          tabBarInactiveTintColor: "#CDCDE0",
+          tabBarInactiveTintColor: "#9999AA",
           tabBarShowLabel: false,
           tabBarStyle: styles.tabBarStyle,
         }}
       >
-        <Tabs.Screen
-          name="home"
-          options={{
-            title: "Home",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.home}
-                color={color}
-                name="Home"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="task"
-          options={{
-            title: "Task",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.bookmark}
-                color={color}
-                name="Task"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="cart"
-          options={{
-            title: "Cart",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.plus}
-                color={color}
-                name="Cart"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.profile}
-                color={color}
-                name="Profile"
-                focused={focused}
-              />
-            ),
-          }}
-        />
+        {TAB_CONFIG.map((tab) => (
+          <Tabs.Screen
+            key={tab.name}
+            name={tab.name}
+            options={{
+              title: tab.title,
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <TabIcon
+                  icon={tab.icon}
+                  name={tab.title}
+                  focused={focused}
+                />
+              ),
+            }}
+          />
+        ))}
       </Tabs>
-
+      
       <StatusBar backgroundColor="#161622" style="light" />
     </>
   );
 };
 
-// Styles using StyleSheet.create()
 const styles = StyleSheet.create({
   tabIconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    width: 60,
+  },
+  tabIconContainerActive: {
+    backgroundColor: 'rgba(255, 160, 1, 0.1)',
+    borderRadius: 8,
   },
   tabIcon: {
     width: 24,
     height: 24,
+    marginBottom: 4,
   },
   tabText: {
-    fontSize: 10,
-    fontFamily: 'PRegular',  // Replace with your actual font name
-  },
-  tabTextFocused: {
-    fontFamily: 'PSemibold',  // Replace with your actual font name
+    fontSize: 12,
+    fontFamily: "PRegular",
   },
   tabBarStyle: {
     backgroundColor: "#161622",
-    borderTopWidth: 1,
-    borderTopColor: "#232533",
-    height: 84,
+    borderTopWidth: 0,
+    height: 70,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
 });
 

@@ -1,321 +1,304 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
+  SafeAreaView,
+  StatusBar,
   TouchableOpacity,
-  Image,
+  Modal,
   TextInput,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+  Button,
+} from "react-native";
+import CartItem from "../../components/CartItem";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
     {
-      id: '1',
-      name: 'Roll with shrimp',
-      price: 2.90,
-      quantity: 2,
-      image: 'https://int.japanesetaste.com/cdn/shop/articles/how-to-make-makizushi-sushi-rolls-japanese-taste.jpg?v=1707914944&width=5760',
+      id: "1",
+      name: "Momo",
+      price: 5.5,
+      quantity: 1,
+      description:
+        "Steamed dumplings filled with minced chicken and spices, served with spicy achar.",
+      image:
+        "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
     },
     {
-      id: '2',
-      name: 'Nigiri special',
-      price: 4.20,
+      id: "2",
+      name: "Dal Bhat Tarkari",
+      price: 7.9,
       quantity: 1,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuwPJGpLvXKp_rD42RKj1jXYXNGzatHHz3sQ&s',
+      description:
+        "Traditional Nepali meal with steamed rice, lentil soup, and vegetable curry.",
+      image:
+        "https://www.aroundmanaslutrek.com/wp-content/uploads/2024/07/dal-bhat-tarkari.jpeg",
+    },
+    {
+      id: "3",
+      name: "Sekuwa",
+      price: 6.5,
+      quantity: 1,
+      description: "Grilled skewered meat marinated in Nepali spices.",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlwkp8SJ7-gORtwhd3RilqkM-k5v_vn1f3KA&s",
     },
   ]);
 
-  const [promoCode, setPromoCode] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [userXP, setUserXP] = useState(500); // Example XP points
+  const [xpDiscount, setXpDiscount] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
 
-  const updateQuantity = (id, change) => {
-    setCartItems(prevItems =>
-      prevItems.map(item => {
-        if (item.id === id) {
-          const newQuantity = Math.max(0, item.quantity + change);
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      }).filter(item => item.quantity > 0)
+  const xpToDiscountRate = 0.01; // 1 XP = Rs. 0.01 discount
+
+  const handleQuantityChange = (id, type) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              quantity:
+                type === "increase"
+                  ? item.quantity + 1
+                  : Math.max(1, item.quantity - 1),
+            }
+          : item
+      )
     );
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 2.00;
-  const discount = 0;
-  const total = subtotal + deliveryFee - discount;
+  const handleDeleteItem = (id) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
 
-  const renderCartItem = (item) => (
-    <View key={item.id} style={styles.cartItem}>
-      <Image
-        source={{ uri: item.image }}
-        style={styles.itemImage}
-        defaultSource={{uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}}
-      />
-      <View style={styles.itemInfo}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-      </View>
-      <View style={styles.quantityControls}>
-        <TouchableOpacity
-          onPress={() => updateQuantity(item.id, -1)}
-          style={styles.quantityButton}
-        >
-          <Ionicons name="remove" size={20} color="#666" />
-        </TouchableOpacity>
-        <Text style={styles.quantityText}>{item.quantity}</Text>
-        <TouchableOpacity
-          onPress={() => updateQuantity(item.id, 1)}
-          style={styles.quantityButton}
-        >
-          <Ionicons name="add" size={20} color="#666" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  // Calculate the total before applying any discount
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+  };
+
+  const handleApplyVoucher = () => {
+    // Assuming a 10% discount for a valid voucher code
+    if (voucherCode === "DISCOUNT10") {
+      setTotalAmount((prevAmount) => prevAmount * 0.9); // Apply 10% discount
+      alert("Voucher applied! 10% discount added.");
+    } else {
+      alert("Invalid voucher code.");
+    }
+  };
+
+  const handleApplyXP = () => {
+    const xpDiscountAmount = userXP * xpToDiscountRate;
+    setXpDiscount(xpDiscountAmount); // Set the XP discount
+    setTotalAmount(calculateTotal() - xpDiscountAmount); // Subtract XP discount from total
+    alert(`XP applied! You get Rs. ${xpDiscountAmount} discount.`);
+  };
+
+  const handleApplyDeliveryCharge = () => {
+    setTotalAmount(calculateTotal() + deliveryCharge); // Add delivery charge
+  };
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.container}>
+        <Text style={styles.header}>Your Cart</Text>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          {cartItems.map((item) => (
+            <CartItem
+              key={item.id}
+              item={item}
+              onQuantityChange={handleQuantityChange}
+              onDelete={handleDeleteItem}
+            />
+          ))}
+        </ScrollView>
+
+        {/* Total amount */}
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>Total:</Text>
+          <Text style={styles.totalText}>Rs: {totalAmount || calculateTotal()}</Text>
+        </View>
+
+        {/* Proceed to checkout button */}
+        <TouchableOpacity style={styles.checkoutButton} onPress={openModal}>
+          <Text style={{ fontWeight: "600", fontSize: 16 }}>
+            Proceed to Checkout
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Your food cart</Text>
-      </View>
 
-      <View style={styles.deliverySection}>
-        <View style={styles.deliveryHeader}>
-          <Text style={styles.deliveryTitle}>Deliver to</Text>
-          <TouchableOpacity>
-            <Text style={styles.changeButton}>Change</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.addressContainer}>
-          <Ionicons name="location-outline" size={24} color="#666" />
-          <Text style={styles.addressText}>242 ST Marks Eve, Finland</Text>
-        </View>
-      </View>
+        {/* Modal for Voucher, Delivery Charge, XP points */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeader}>Checkout Details</Text>
 
-      <ScrollView style={styles.cartItemsContainer}>
-        {cartItems.map(renderCartItem)}
-      </ScrollView>
+              {/* Voucher Code */}
+              <TextInput
+                style={styles.input}
+                placeholder="Enter voucher code"
+                value={voucherCode}
+                onChangeText={setVoucherCode}
+              />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleApplyVoucher}
+              >
+                <Text>Apply Voucher</Text>
+              </TouchableOpacity>
 
-      <View style={styles.promoContainer}>
-        <View style={styles.promoInputContainer}>
-          <Ionicons name="ticket-outline" size={20} color="#666" />
-          <TextInput
-            style={styles.promoInput}
-            placeholder="Promo Code"
-            value={promoCode}
-            onChangeText={setPromoCode}
-          />
-        </View>
-        <TouchableOpacity style={styles.applyButton}>
-          <Text style={styles.applyButtonText}>Apply</Text>
-        </TouchableOpacity>
-      </View>
+              {/* Delivery Charge */}
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Delivery Charge"
+                keyboardType="numeric"
+                value={deliveryCharge.toString()}
+                onChangeText={(value) => setDeliveryCharge(Number(value))}
+              />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleApplyDeliveryCharge}
+              >
+                <Text>Apply Delivery Charge</Text>
+              </TouchableOpacity>
 
-      <View style={styles.summary}>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryText}>Subtotal</Text>
-          <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
-        </View>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryText}>Delivery Fee</Text>
-          <Text style={styles.summaryValue}>${deliveryFee.toFixed(2)}</Text>
-        </View>
-        {discount > 0 && (
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryText}>Discount</Text>
-            <Text style={[styles.summaryValue, styles.discountText]}>
-              -${discount.toFixed(2)}
-            </Text>
+              {/* XP Points */}
+              <Text style={styles.xpText}>
+                You have {userXP} XP points available
+              </Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleApplyXP}
+              >
+                <Text>Apply XP Discount</Text>
+              </TouchableOpacity>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={closeModal}>
+                  <Text>Close</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={closeModal}
+                >
+                  <Text>Confirm</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        )}
-        <View style={[styles.summaryRow, styles.totalRow]}>
-          <Text style={styles.totalText}>Total</Text>
-          <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
-        </View>
+        </Modal>
       </View>
-
-      <TouchableOpacity style={styles.checkoutButton}>
-        <Text style={styles.checkoutButtonText}>Proceed to Payment</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    padding: 10,
+    paddingTop: 18,
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f8f8fc',
+    paddingTop: 40, // Added some padding at the top to push content down
+    paddingHorizontal: 16,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20, // Increased the margin below the header for more space
+    color: "#1a1a1a",
   },
-  backButton: {
-    marginRight: 15,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  deliverySection: {
-    backgroundColor: '#fff',
-    padding: 20,
-    marginBottom: 10,
-  },
-  deliveryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  deliveryTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  changeButton: {
-    color: '#7b61ff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  addressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  addressText: {
-    marginLeft: 10,
-    fontSize: 14,
-    color: '#666',
-  },
-  cartItemsContainer: {
+  scrollView: {
     flex: 1,
-  },
-  cartItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    marginBottom: 1,
-  },
-  itemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-  },
-  itemInfo: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  itemPrice: {
-    fontSize: 14,
-    color: '#7b61ff',
-    fontWeight: '600',
-  },
-  quantityControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f8fc',
-    borderRadius: 20,
-    padding: 5,
-  },
-  quantityButton: {
-    padding: 5,
-  },
-  quantityText: {
-    paddingHorizontal: 10,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  promoContainer: {
-    flexDirection: 'row',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  promoInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f8fc',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginRight: 10,
-  },
-  promoInput: {
-    flex: 1,
-    marginLeft: 10,
-    height: 40,
-  },
-  applyButton: {
-    backgroundColor: '#7b61ff',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  summary: {
-    backgroundColor: '#fff',
-    padding: 20,
-    marginTop: 10,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  summaryText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  summaryValue: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  discountText: {
-    color: '#4CAF50',
-  },
-  totalRow: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
   },
   totalText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
   },
-  totalAmount: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#7b61ff',
+  totalContainer: {
+    width: 333,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#e9ecef",
   },
   checkoutButton: {
-    backgroundColor: '#7b61ff',
-    margin: 20,
-    padding: 18,
-    borderRadius: 15,
-    alignItems: 'center',
+    backgroundColor: "#FFA500",
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
   },
-  checkoutButtonText: {
-    color: '#fff',
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalHeader: {
+    fontSize: 22,
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  input: {
+    width: "100%",
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  button: {
+    backgroundColor: "#FFA500",
+    padding: 10,
+    borderRadius: 5,
+    width: "100%",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  xpText: {
+    marginBottom: 10,
     fontSize: 16,
-    fontWeight: '600',
+    color: "#333",
   },
 });
 
