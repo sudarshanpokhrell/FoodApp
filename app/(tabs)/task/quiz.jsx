@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -121,21 +122,39 @@ const Quiz = () => {
     }
   };
 
+  const updatePoints = async (score) => {
+    try {
+      const newPoints = score * 1;
+      const currentPoints = await AsyncStorage.getItem('point');
+      const totalPoints = currentPoints ? parseInt(currentPoints) + newPoints : newPoints;
+      await AsyncStorage.setItem('point', totalPoints.toString());
+      return totalPoints;
+    } catch (error) {
+      console.error('Error updating points:', error);
+      return null;
+    }
+  };
+
   const showResults = () => {
-    const discount = score * 10;
+    const discount = score * 1;
     Alert.alert(
       "Quiz Completed!",
-      `You scored ${score} out of 10!\nYou've earned ${discount}% discount on your next order!`,
+      `You scored ${score} out of 10!\nYou've earned ${discount} coin`,
       [
         {
           text: "Claim Reward",
           onPress: () => {
-            console.log("Discount claimed:", discount);
+            console.log("Coin claimed:", discount);
           }
         }
       ]
     );
+    updatePoints();
   };
+
+
+
+
 
   if (!quizStarted) {
     return (
@@ -146,9 +165,9 @@ const Quiz = () => {
             Test your knowledge about Nepali cuisine!{'\n\n'}
             • 10 questions{'\n'}
             • 10 seconds per question{'\n'}
-            • Earn up to 100% discount
+            • Earn up to 100 coin
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.startButton}
             onPress={startQuiz}
           >
@@ -163,7 +182,7 @@ const Quiz = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.back()}
           >
@@ -177,7 +196,7 @@ const Quiz = () => {
           <Text style={styles.resultDiscount}>
             You earned {score * 10}% discount!
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.claimButton}
             onPress={() => {
               console.log("Claiming discount");
@@ -186,7 +205,7 @@ const Quiz = () => {
           >
             <Text style={styles.claimButtonText}>Claim Your Discount</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.startButton, { marginTop: 20 }]}
             onPress={startQuiz}
           >
@@ -200,7 +219,7 @@ const Quiz = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
@@ -210,7 +229,7 @@ const Quiz = () => {
       </View>
 
       <View style={styles.progressContainer}>
-        <Animated.View 
+        <Animated.View
           style={[
             styles.progressBar,
             {
@@ -219,7 +238,7 @@ const Quiz = () => {
                 outputRange: ['0%', '100%'],
               }),
             },
-          ]} 
+          ]}
         />
       </View>
 

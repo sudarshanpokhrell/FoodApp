@@ -12,7 +12,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+
+import AchievementPopup from "../../components/Popup";
+import FloatingPoll from "../../components/feedback";
+
 
 const Home = () => {
   const [greeting, setGreeting] = useState("");
@@ -39,6 +42,89 @@ const Home = () => {
       image:
         "https://dww3ueizok6z0.cloudfront.net/food/banner/193-8e6f5c121411ff2b5a54143fa12a5d126973b2f0",
     },
+
+  ]);
+
+  const [nearbyRestaurants, setNearbyRestaurants] = useState([
+    {
+      id: "1",
+      name: "The Gardens",
+      cuisine: "Nepali • Indian • Asian",
+      rating: "4.7",
+      time: "20-30 min",
+      location: "Kathmandu, Nepal", // Add location
+      image:
+        "https://lh3.googleusercontent.com/p/AF1QipP1CO-JHVhWcVzuMKa7YWbhXbSDnw4xpnL__fd7=s1360-w1360-h1020",
+    },
+    {
+      id: "2",
+      name: "Nepali Ramen",
+      cuisine: "Japanese • Ramen • Sushi",
+      rating: "4.5",
+      time: "25-35 min",
+      location: "Thamel, Kathmandu", // Add location
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrlfFG67yF4BVNVzp448a-u7tIPK5kAij5dw&s",
+    },
+  ]);
+
+  const [rapidFeast, setRapidFeast] = useState([
+    {
+      id: "1",
+      name: "Momo",
+      price: "2.90",
+      rating: "4.5",
+      restaurantName: "The Gardens", // Added restaurant name
+      address: "123 Main St, Kathmandu", // Added address
+      image:
+        "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
+    },
+    {
+      id: "2",
+      name: "Chicken Leg Piece",
+      price: "3.50",
+      rating: "4.8",
+      restaurantName: "Mero Kitchen", // Added restaurant name
+      address: "456 Thamel, Kathmandu", // Added address
+      image:
+        "https://www.thespruceeats.com/thmb/Ce9JRCp8CRy0TvjpOMG1_zzhrWE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/terris-crispy-fried-chicken-legs-3056879-hero-01-db3cd6bfead040e6ad07528a162db843.jpg",
+    },
+    {
+      id: "3",
+      name: "Chicken Pizza",
+      price: "4.20",
+      rating: "4.6",
+      restaurantName: "Pizza Hub", // Added restaurant name
+      address: "789 Durbar Marg, Kathmandu", // Added address
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Lj3_8eh0xYQLDhyh1pYwOF6l00mL7hIfww&s",
+    },
+  ]);
+
+  async function UserSetter() {
+    const user = JSON.parse(await AsyncStorage.getItem('user'));
+    setData(user.data)
+  }
+
+
+  async function FetchRapidfeast() {
+    const response= await axios.get('http://192.168.16.75:3000/api/v1/food/rapid',{
+      headers: {
+        'Content-Type': 'application/json',
+        }  
+    })
+    console.log(response.data)
+    if(response.status===200){
+     setRapidFeast(response.data.data)
+    }
+    console.log(rapidFeast)
+  }
+
+  useEffect(() => {
+    UserSetter();
+    FetchRapidfeast();
+    console.log(rapidFeast)
+    AsyncStorage.setItem('point','0');
   ];
 
   const fetchUserData = async () => {
@@ -76,6 +162,7 @@ const Home = () => {
     fetchUserData();
     fetchNearbyRestaurants();
     fetchRapidFeast();
+
 
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
