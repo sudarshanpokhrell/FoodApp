@@ -12,9 +12,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+
 import AchievementPopup from "../../components/Popup";
-import FoodPoll from "../../components/feedback";
 import FloatingPoll from "../../components/feedback";
 
 const Home = () => {
@@ -107,22 +106,15 @@ const Home = () => {
 
 
   async function FetchRapidfeast() {
-
-
     const response= await axios.get('http://192.168.16.75:3000/api/v1/food/rapid',{
       headers: {
         'Content-Type': 'application/json',
         }  
-
     })
-
     console.log(response.data)
     if(response.status===200){
      setRapidFeast(response.data.data)
-
     }
-    
-
     console.log(rapidFeast)
   }
 
@@ -130,6 +122,7 @@ const Home = () => {
     UserSetter();
     FetchRapidfeast();
     console.log(rapidFeast)
+    AsyncStorage.setItem('point','0');
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
       setGreeting("Good Morning");
