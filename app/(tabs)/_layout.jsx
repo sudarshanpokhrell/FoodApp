@@ -15,6 +15,11 @@ const TAB_CONFIG = [
     icon: icons.bookmark,
   },
   {
+    name: "Credit",
+    title: "Credit",
+    icon: icons.start,
+  },
+  {
     name: "cart",
     title: "Cart",
     icon: icons.cart,
