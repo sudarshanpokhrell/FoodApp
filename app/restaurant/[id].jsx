@@ -174,7 +174,7 @@ const RestaurantDetails = ({ restaurant }) => {
             </View>
           </View>
           <Text style={styles.menuItemDescription}>{item.description}</Text>
-          <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.menuItemPrice}>Rs.{item.price.toFixed(2)}</Text>
         </View>
         <Image
           source={{ uri: item.image }}
@@ -233,25 +233,25 @@ const RestaurantDetails = ({ restaurant }) => {
 
         <View style={styles.addressContainer}>
           <MaterialIcons name="place" size={20} color="#666" />
-          <Text style={styles.address}>{data.address}</Text>
+                <Text style={styles.address}>{data.address}</Text>
         </View>
 
         <View style={styles.infoContainer}>
           <View style={styles.infoItem}>
             <MaterialIcons name="delivery-dining" size={24} color="#666" />
-            <Text style={styles.infoText}>{data.deliveryTime} mins</Text>
+                <Text style={styles.infoText}>{data.deliveryTime} mins</Text>
           </View>
 
           <View style={styles.infoItem}>
             <MaterialIcons name="location-on" size={24} color="#666" />
-            <Text style={styles.infoText}>{data.distance} km</Text>
+                <Text style={styles.infoText}>{data.distance} km</Text>
           </View>
         </View>
 
         <View style={styles.divider} />
 
         {/* Menu Section */}
-        <Text style={styles.menuTitle}>Menu</Text>
+                <Text style={styles.menuTitle}>Menu</Text>
 
         {/* Categories */}
         <FlatList

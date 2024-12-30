@@ -15,7 +15,7 @@ const CartItem = ({ item, onQuantityChange, onDelete }) => {
         </View>
         <Text style={styles.itemDescription}>{item.description}</Text>
         <View style={styles.itemBottom}>
-          <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.itemPrice}>Rs.{item.price.toFixed(2)}</Text>
           <View style={styles.quantityControls}>
             <TouchableOpacity
               onPress={() => onQuantityChange(item.id, "decrease")}

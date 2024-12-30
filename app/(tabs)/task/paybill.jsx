@@ -127,18 +127,18 @@ export default function BillRoulettePage() {
         {rouletteResult.type === 'individual' ? (
           <>
             <Text style={styles.resultTitle}>{rouletteResult.winner} pays the bill!</Text>
-            <Text style={styles.resultText}>Total amount: ${rouletteResult.amount.toFixed(2)}</Text>
+            <Text style={styles.resultText}>Total amount: Rs.{rouletteResult.amount.toFixed(2)}</Text>
           </>
         ) : (
           <>
             <Text style={styles.resultTitle}>Random Split Result</Text>
             {players.map((player, index) => (
               <Text key={index} style={styles.resultText}>
-                {player}: ${rouletteResult.payments[index]}
+                {player}: Rs.{rouletteResult.payments[index]}
               </Text>
             ))}
             <Text style={[styles.resultText, styles.totalText]}>
-              Total: ${rouletteResult.totalAmount.toFixed(2)}
+              Total: Rs.{rouletteResult.totalAmount.toFixed(2)}
             </Text>
           </>
         )}
@@ -188,7 +188,7 @@ export default function BillRoulettePage() {
 
       <TextInput
         style={styles.input}
-        placeholder="Enter bill amount ($)"
+        placeholder="Enter bill amount (Rs.)"
         value={billAmount}
         onChangeText={setBillAmount}
         keyboardType="decimal-pad"
