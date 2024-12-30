@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
-    height: 56, // Fixed height for button
+    height: 56, 
   },
   loginButton: {
     backgroundColor: "#FF5722",

@@ -29,7 +29,6 @@ const Welcome = () => {
             backgroundColor: COLORS.white,
           }}
         >
-          {/* Decorative Element */}
           <View
             style={{
               position: 'absolute',
