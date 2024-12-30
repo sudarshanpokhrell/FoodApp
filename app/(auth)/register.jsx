@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
 import FormComponent from "./FormComponent";
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const COLORS = {
   primary: "#FF6347",
@@ -104,7 +105,10 @@ const Register = () => {
         );
 
 
-        if (response.status === 200) { router.push("/preferences"); }
+        if (response.status === 200) {
+          await AsyncStorage.setItem('user',JSON.stringify(response.data));
+          router.push("/preferences");
+        }
       }
       catch (error) {
         if (error.response) {
