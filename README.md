@@ -10,10 +10,8 @@ Welcome to the **Saras Food Delivery App**! This repository hosts the implementa
 2. [Features](#features)
 3. [Tech Stack](#tech-stack)
 4. [Setup Instructions](#setup-instructions)
-5. [Usage](#usage)
-6. [Future Enhancements](#future-enhancements)
-7. [Team](#team)
-8. [License](#license)
+5. [Future Enhancements](#future-enhancements)
+6. [Team](#team)
 
 ---
 
@@ -34,7 +32,6 @@ Our mission is to deliver enjoyable and convenience through delicious food at yo
 
 - **Food on Credit**:
   - User can buy meal on credit.
-
 
 ---
 
