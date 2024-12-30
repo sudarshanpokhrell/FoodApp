@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import { 
-  Modal, 
-  View, 
-  Text, 
-  TouchableOpacity, 
+import {
+  Modal,
+  View,
+  Text,
+  TouchableOpacity,
   StyleSheet,
   ScrollView,
   SafeAreaView
 } from 'react-native';
-import { useFonts } from 'expo-font';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 
 const foodCategories = [
@@ -37,27 +38,48 @@ const FoodPreferencesModal = ({ visible, onClose, onSave }) => {
   const [selectedCuisines, setSelectedCuisines] = useState([]);
 
   const toggleCategory = (categoryId) => {
-    setSelectedCategories(prev => 
+    setSelectedCategories((prev) =>
       prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
+        ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId]
     );
   };
 
   const toggleCuisine = (cuisineId) => {
-    setSelectedCuisines(prev => 
+    setSelectedCuisines((prev) =>
       prev.includes(cuisineId)
-        ? prev.filter(id => id !== cuisineId)
+        ? prev.filter((id) => id !== cuisineId)
         : [...prev, cuisineId]
     );
   };
 
-  const handleSave = () => {
-    onSave({
-      categories: selectedCategories,
-      cuisines: selectedCuisines
-    });
-    onClose();
+  const handleSave = async () => {
+    try {
+      const user = JSON.parse(await AsyncStorage.getItem('user'));
+      console.log(user.data._id)
+      const preferences = {
+        categories: foodCategories
+          .filter((category) => selectedCategories.includes(category.id))
+          .map((category) => category.name),
+        cuisines: cuisineTypes
+          .filter((cuisine) => selectedCuisines.includes(cuisine.id))
+          .map((cuisine) => cuisine.name)
+      };
+      console.log(JSON.stringify(preferences))
+      const response = await axios.post(`http://192.168.16.75:3000/api/v1/user/preferences/${user.data._id}`, JSON.stringify(preferences), {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (response.status === 200) {
+        console.log('Preferences saved successfully');
+        await AsyncStorage.setItem('user', JSON.stringify(response.data));
+        router.push('home');
+      }
+
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+    }
   };
 
   return (
@@ -114,7 +136,7 @@ const FoodPreferencesModal = ({ visible, onClose, onSave }) => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.skipButton}
-             onPress={() => router.push("/home")}
+              onPress={() => router.push('/home')}
             >
               <Text style={styles.skipButtonText}>Skip</Text>
             </TouchableOpacity>

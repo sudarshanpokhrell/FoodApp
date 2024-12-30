@@ -92,7 +92,7 @@ const ProfileScreen = () => {
           </View>
           <View style={styles.userInfo}>
             <Text style={styles.name}>Sanjay Malla</Text>
-            <Text style={styles.xp}> 1200 XP ⚡</Text>
+            <Text style={styles.xp}>Coins: 1200 🪙</Text>
             <Text style={styles.joined}>Foodie since Jan 2024</Text>
           </View>
           <TouchableOpacity style={styles.shareButton}>
@@ -174,16 +174,15 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 200,
-    position: 'relative',
+    position: "relative",
     borderRadius: 50,
   },
   headerBackground: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#FFA500',
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#FFA500",
     borderRadius: 30,
-
   },
   profileContent: {
     flexDirection: "row",
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
     borderColor: "#FFF",
     borderWidth: 3,
   },
- 
+
   userInfo: {
     marginLeft: 20,
     flex: 1,
@@ -331,13 +330,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  achievementTitle:{
+  achievementTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#333",
     marginBottom: 5,
   },
-  achievementDescription:{
+  achievementDescription: {
     color: "#666",
     marginBottom: 5,
   },
