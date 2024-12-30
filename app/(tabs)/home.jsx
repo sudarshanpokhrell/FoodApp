@@ -115,7 +115,7 @@ const Home = () => {
       <View style={styles.recommendedContent}>
         <Text style={styles.recommendedName}>{item.name}</Text>
         <View style={styles.recommendedDetails}>
-          <Text style={styles.recommendedPrice}>${item.price}</Text>
+          <Text style={styles.recommendedPrice}>Rs.{item.price}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
             <Text style={styles.ratingText}>{item.rating}</Text>
@@ -197,7 +197,7 @@ const Home = () => {
       <View style={styles.specialOffer}>
         <Text style={styles.offerTitle}>Special Offers</Text>
         <Text style={styles.offerDescription}>
-          Make $77+ order and get Caviar Roll for free!
+          Make Rs77+ order and get Caviar Roll for free!
         </Text>
       </View>
 
@@ -238,12 +238,14 @@ const Home = () => {
 
       <Text style={styles.sectionTitle}>Nearby Restaurants</Text>
       <View style={styles.restaurantsContainer}>
+        <Text>
         <FlatList
           data={nearbyRestaurants}
           renderItem={renderRestaurantItem}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
-        />
+          />
+      </Text>
       </View>
     </ScrollView>
   );

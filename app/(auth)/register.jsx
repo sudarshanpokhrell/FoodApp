@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import { KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from "react-native";
 import FormComponent from "./FormComponent";
+import axios from "axios";
 
 const COLORS = {
   primary: "#FF6347", 
@@ -85,10 +86,11 @@ const Register = () => {
     return isValid;
   };
 
-  const handleRegister = () => {
+  const handleRegister =async  () => {
     if (validateForm()) {
       console.log("Registration data:", formData);
-      router.push("/preferences");
+     const response= await axios.post('/signup',)
+      // router.push("/preferences");
     }
   };
 
