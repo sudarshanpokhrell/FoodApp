@@ -53,6 +53,7 @@ const FoodPreferencesModal = ({ visible, onClose, onSave }) => {
   };
 
   const handleSave = () => {
+    
     onSave({
       categories: selectedCategories,
       cuisines: selectedCuisines

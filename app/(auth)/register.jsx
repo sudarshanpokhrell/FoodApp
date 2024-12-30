@@ -8,22 +8,22 @@ import FormComponent from "./FormComponent";
 import axios from "axios";
 
 const COLORS = {
-  primary: "#FF6347", 
-  secondary: "#FFA07A", 
-  accent: "#FFE4E1", 
+  primary: "#FF6347",
+  secondary: "#FFA07A",
+  accent: "#FFE4E1",
   text: "#4A4A4A",
-  textLight: "#6B7280", 
+  textLight: "#6B7280",
   white: "#FFFFFF",
-  error: "#FF3B30", 
+  error: "#FF3B30",
 };
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    fullName: "sudarshan",
+    phone: "9786535412",
+    email: "email@gmail.com",
+    password: "helloworld",
+    confirmPassword: "helloworld",
   });
 
   const [errors, setErrors] = useState({
@@ -86,12 +86,41 @@ const Register = () => {
     return isValid;
   };
 
-  const handleRegister =async  () => {
+  const handleRegister = async () => {
     if (validateForm()) {
       console.log("Registration data:", formData);
-     const response= await axios.post('/signup',)
-      // router.push("/preferences");
+      try {
+        const response = await axios.post('http://192.168.16.75:3000/api/v1/user/register', {
+          fullName: formData.fullName,
+          phoneNumber: formData.phone,
+          email: formData.email,
+          password: formData.password,
+        },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+        );
+
+
+        if (response.status === 200) { router.push("/preferences"); }
+      }
+      catch (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.log('Error response:', error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log('Network error:', error.message);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error:', error.message);
+        }
+      }
+
     }
+
   };
 
   return (
@@ -105,7 +134,7 @@ const Register = () => {
           <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
             {/* Decorative Element */}
             <View style={styles.decorativeElement} />
-            
+
             <View style={styles.formWrapper}>
               <Text style={styles.title}>Create Account</Text>
               <Text style={styles.subtitle}>Sign up now to get started with an account</Text>
@@ -139,8 +168,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
-  formWrapper:{
-    backgroundColor:"#fff",
+  formWrapper: {
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     paddingHorizontal: 24,
