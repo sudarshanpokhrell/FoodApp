@@ -13,17 +13,14 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import AchievementPopup from "../../components/Popup";
-import FoodPoll from "../../components/feedback";
-import FloatingPoll from "../../components/feedback";
 
 const Home = () => {
   const [greeting, setGreeting] = useState("");
   const [data, setData] = useState([]);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState([]);
+  const [rapidFeast, setRapidFeast] = useState([]);
 
-  const [pollVisible, setPollVisible] = useState(false);
-
-  const [recommendedItems, setRecommendedItems] = useState([
+  const recommendedItems = [
     {
       id: "1",
       name: "Momo",
@@ -42,94 +39,44 @@ const Home = () => {
       image:
         "https://dww3ueizok6z0.cloudfront.net/food/banner/193-8e6f5c121411ff2b5a54143fa12a5d126973b2f0",
     },
-  ]);
+  ];
 
-  const [nearbyRestaurants, setNearbyRestaurants] = useState([
-    {
-      id: "1",
-      name: "The Gardens",
-      cuisine: "Nepali • Indian • Asian",
-      rating: "4.7",
-      time: "20-30 min",
-      location: "Kathmandu, Nepal", // Add location
-      image:
-        "https://lh3.googleusercontent.com/p/AF1QipP1CO-JHVhWcVzuMKa7YWbhXbSDnw4xpnL__fd7=s1360-w1360-h1020",
-    },
-    {
-      id: "2",
-      name: "Nepali Ramen",
-      cuisine: "Japanese • Ramen • Sushi",
-      rating: "4.5",
-      time: "25-35 min",
-      location: "Thamel, Kathmandu", // Add location
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrlfFG67yF4BVNVzp448a-u7tIPK5kAij5dw&s",
-    },
-  ]);
-
-  const [rapidFeast, setRapidFeast] = useState([
-    {
-      id: "1",
-      name: "Momo",
-      price: "2.90",
-      rating: "4.5",
-      restaurantName: "The Gardens", // Added restaurant name
-      address: "123 Main St, Kathmandu", // Added address
-      image:
-        "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/shaikh.khalid7-gmail.com/Chicken_Momos_Recipe_Delicious_Steamed_Chicken_Dumplings.jpg",
-    },
-    {
-      id: "2",
-      name: "Chicken Leg Piece",
-      price: "3.50",
-      rating: "4.8",
-      restaurantName: "Mero Kitchen", // Added restaurant name
-      address: "456 Thamel, Kathmandu", // Added address
-      image:
-        "https://www.thespruceeats.com/thmb/Ce9JRCp8CRy0TvjpOMG1_zzhrWE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/terris-crispy-fried-chicken-legs-3056879-hero-01-db3cd6bfead040e6ad07528a162db843.jpg",
-    },
-    {
-      id: "3",
-      name: "Chicken Pizza",
-      price: "4.20",
-      rating: "4.6",
-      restaurantName: "Pizza Hub", // Added restaurant name
-      address: "789 Durbar Marg, Kathmandu", // Added address
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Lj3_8eh0xYQLDhyh1pYwOF6l00mL7hIfww&s",
-    },
-  ]);
-
-  async function UserSetter() {
-    const user = JSON.parse(await AsyncStorage.getItem('user'));
-    setData(user.data)
-  }
-
-
-  async function FetchRapidfeast() {
-
-
-    const response= await axios.get('http://192.168.16.75:3000/api/v1/food/rapid',{
-      headers: {
-        'Content-Type': 'application/json',
-        }  
-
-    })
-
-    console.log(response.data)
-    if(response.status===200){
-     setRapidFeast(response.data.data)
-
+  const fetchUserData = async () => {
+    try {
+      const user = JSON.parse(await AsyncStorage.getItem("user"));
+      setData(user.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
-    
+  };
 
-    console.log(rapidFeast)
-  }
+  const fetchNearbyRestaurants = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.16.61:3000/api/v1/resturant"
+      );
+      setNearbyRestaurants(response.data.data);
+    } catch (error) {
+      console.error("Error fetching nearby restaurants:", error);
+    }
+  };
+
+  const fetchRapidFeast = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.16.61:3000/api/v1/food/rapid"
+      );
+      setRapidFeast(response.data.data);
+    } catch (error) {
+      console.error("Error fetching rapid feast items:", error);
+    }
+  };
 
   useEffect(() => {
-    UserSetter();
-    FetchRapidfeast();
-    console.log(rapidFeast)
+    fetchUserData();
+    fetchNearbyRestaurants();
+    fetchRapidFeast();
+
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
       setGreeting("Good Morning");
@@ -158,9 +105,11 @@ const Home = () => {
             <Text style={styles.ratingText}>{item.rating}</Text>
           </View>
         </View>
-        <Text style={styles.restaurantName}>{item.restaurantName}</Text>{" "}
+        <Text style={styles.restaurantName}>{item.restaurant.name}</Text>{" "}
         {/* Display restaurant name */}
-        <Text style={styles.restaurantAddress}>{item.address}</Text>{" "}
+        <Text style={styles.restaurantAddress}>
+          {item.restaurant.address}
+        </Text>{" "}
         {/* Display restaurant address */}
       </View>
     </TouchableOpacity>
@@ -184,7 +133,7 @@ const Home = () => {
   const renderRestaurantItem = ({ item }) => (
     <TouchableOpacity
       style={styles.restaurantCard}
-      onPress={() => router.push(`/restaurant/${item.id}`)}
+      onPress={() => router.push(`/restaurant/${item._id}`)}
     >
       <View style={styles.restaurantContent}>
         <Image
@@ -195,28 +144,30 @@ const Home = () => {
           }}
         />
         <View style={styles.restaurantInfo}>
-          <View style={styles.headerRow}>
-            <View style={{ flexDirection: "column", flex: 1 }}>
-              <Text style={styles.restaurantName}>{item.name}</Text>
-              <Text style={styles.restaurantLocation}>{item.location}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => setPollVisible(true)}
-              style={styles.pollButton}
-            >
-              <Ionicons name="bar-chart" size={20} color="#007AFF" />
-            </TouchableOpacity>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.restaurantName}>{item.name}</Text>
+            <Text style={styles.restaurantLocation}>{item.address}</Text>
           </View>
 
-          <Text style={styles.restaurantCuisine}>{item.cuisine}</Text>
+          <Text style={styles.restaurantCuisine}>
+            {item.cuisine.join(" • ")}
+          </Text>
           <View style={styles.restaurantDetails}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ionicons name="star" size={16} color="#FFD700" />
               <Text style={styles.ratingText}>{item.rating}</Text>
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 12 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 12,
+              }}
+            >
               <Ionicons name="time-outline" size={16} color="#666" />
-              <Text style={styles.restaurantTime}>{item.time}</Text>
+              <Text style={styles.restaurantTime}>
+                {item.time || "30-35"} min
+              </Text>
             </View>
           </View>
         </View>
@@ -224,22 +175,12 @@ const Home = () => {
     </TouchableOpacity>
   );
 
-  const [showAchievement, setShowAchievement] = useState(true);
-
-
-  const unlockAchievement = () => {
-    setShowAchievement(true);
-  };
-
-  return (<>
-
+  return (
     <ScrollView style={styles.container}>
-      <FloatingPoll
-        isVisible={pollVisible}
-        onClose={() => setPollVisible(false)}
-      />
       <View style={styles.header}>
-        <Text style={styles.headerText}>{greeting}, {data.fullName}</Text>
+        <Text style={styles.headerText}>
+          {greeting}, {data.fullName}
+        </Text>
         <TouchableOpacity style={styles.profileButton}>
           <Ionicons name="person-circle-outline" size={24} color="#000" />
         </TouchableOpacity>
@@ -248,7 +189,7 @@ const Home = () => {
       <View style={styles.specialOffer}>
         <Text style={styles.offerTitle}>Special Offers</Text>
         <Text style={styles.offerDescription}>
-          Make Rs77+ order and get Caviar Roll for free!
+          Make Rs1000+ order and get 1 plate momo for free!
         </Text>
       </View>
 
@@ -260,7 +201,7 @@ const Home = () => {
           style={styles.searchIcon}
         />
         <TextInput
-          onPress={() => router.push('search')}
+          onPress={() => router.push("search")}
           style={styles.searchInput}
           placeholder="I'd like to have..."
           placeholderTextColor="#666"
@@ -281,7 +222,7 @@ const Home = () => {
       <FlatList
         data={rapidFeast}
         renderItem={renderRapidFeast}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.recommendedList}
@@ -297,7 +238,6 @@ const Home = () => {
         />
       </View>
     </ScrollView>
-  </>
   );
 };
 
@@ -379,15 +319,6 @@ const styles = StyleSheet.create({
   },
   recommendedContent: {
     padding: 12,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  },
-  pollButton: {
-    padding: 8,
-    marginLeft: 8,
   },
   recommendedName: {
     fontSize: 16,
