@@ -84,7 +84,6 @@ const Cart = () => {
   };
 
   const handleApplyVoucher = () => {
-    // Assuming a 10% discount for a valid voucher code
     if (voucherCode === "DISCOUNT10") {
       setTotalAmount((prevAmount) => prevAmount * 0.9); // Apply 10% discount
       alert("Voucher applied! 10% discount added.");
@@ -134,14 +133,14 @@ const Cart = () => {
         {/* Total amount */}
         <View style={styles.totalContainer}>
           <Text style={styles.totalText}>Total:</Text>
-          <Text style={styles.totalText}>Rs: {totalAmount || calculateTotal()}</Text>
+          <Text style={styles.totalText}>
+            Rs: {totalAmount || calculateTotal()}
+          </Text>
         </View>
 
         {/* Proceed to checkout button */}
         <TouchableOpacity style={styles.checkoutButton} onPress={openModal}>
-          <Text style={{ fontWeight: "600", fontSize: 16 }}>
-            Proceed to Checkout
-          </Text>
+          <Text style={styles.checkoutText}>Proceed to Checkout</Text>
         </TouchableOpacity>
 
         {/* Modal for Voucher, Delivery Charge, XP points */}
@@ -166,7 +165,7 @@ const Cart = () => {
                 style={styles.button}
                 onPress={handleApplyVoucher}
               >
-                <Text>Apply Voucher</Text>
+                <Text style={styles.buttonText}>Apply Voucher</Text>
               </TouchableOpacity>
 
               {/* Delivery Charge */}
@@ -181,7 +180,7 @@ const Cart = () => {
                 style={styles.button}
                 onPress={handleApplyDeliveryCharge}
               >
-                <Text>Apply Delivery Charge</Text>
+                <Text style={styles.buttonText}>Apply Delivery Charge</Text>
               </TouchableOpacity>
 
               {/* XP Points */}
@@ -192,18 +191,18 @@ const Cart = () => {
                 style={styles.button}
                 onPress={handleApplyXP}
               >
-                <Text>Apply XP Discount</Text>
+                <Text style={styles.buttonText}>Apply XP Discount</Text>
               </TouchableOpacity>
 
               <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={closeModal}>
-                  <Text>Close</Text>
+                  <Text style={styles.buttonText}>Close</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={closeModal}
                 >
-                  <Text>Confirm</Text>
+                  <Text style={styles.buttonText}>Confirm</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -223,25 +222,20 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 40, // Added some padding at the top to push content down
+    paddingTop: 40, 
     paddingHorizontal: 16,
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20, // Increased the margin below the header for more space
+    marginBottom: 20,
     color: "#1a1a1a",
   },
   scrollView: {
     flex: 1,
   },
-  totalText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-  },
   totalContainer: {
-    width: 333,
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -249,12 +243,22 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#e9ecef",
   },
+  totalText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+  },
   checkoutButton: {
     backgroundColor: "#FFA500",
     padding: 16,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
+  },
+  checkoutText: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#fff",
   },
   modalContainer: {
     flex: 1,
@@ -270,25 +274,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalHeader: {
-    fontSize: 22,
+    fontSize: 24,
     marginBottom: 20,
     fontWeight: "bold",
+    color: "#1a1a1a",
   },
   input: {
     width: "100%",
-    padding: 10,
-    marginBottom: 10,
+    padding: 12,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 8,
   },
   button: {
     backgroundColor: "#FFA500",
-    padding: 10,
-    borderRadius: 5,
+    padding: 12,
+    borderRadius: 8,
     width: "100%",
     marginBottom: 10,
     alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   buttonContainer: {
     flexDirection: "row",
