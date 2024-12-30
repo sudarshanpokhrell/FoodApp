@@ -131,7 +131,7 @@ const FoodDetailPage = ({ navigation }) => {
               {option.name}
             </Text>
             {option.price > 0 && (
-              <Text style={styles.optionPrice}>+${option.price.toFixed(2)}</Text>
+              <Text style={styles.optionPrice}>+Rs.{option.price.toFixed(2)}</Text>
             )}
           </TouchableOpacity>
         ))}
@@ -251,7 +251,7 @@ const FoodDetailPage = ({ navigation }) => {
             ]}>
               {extra.label}
             </Text>
-            <Text style={styles.extraPrice}>+${extra.price.toFixed(2)}</Text>
+            <Text style={styles.extraPrice}>+Rs.{extra.price.toFixed(2)}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -362,7 +362,7 @@ const FoodDetailPage = ({ navigation }) => {
                       ]}>
                         {topping.name}
                       </Text>
-                      <Text style={styles.optionPrice}>+${topping.price.toFixed(2)}</Text>
+                      <Text style={styles.optionPrice}>+Rs.{topping.price.toFixed(2)}</Text>
                     </TouchableOpacity>
                   ))}
               </View>
@@ -392,7 +392,7 @@ const FoodDetailPage = ({ navigation }) => {
                       ]}>
                         {topping.name}
                       </Text>
-                      <Text style={styles.optionPrice}>+${topping.price.toFixed(2)}</Text>
+                      <Text style={styles.optionPrice}>+Rs.{topping.price.toFixed(2)}</Text>
                     </TouchableOpacity>
                   ))}
               </View>
@@ -438,7 +438,7 @@ const FoodDetailPage = ({ navigation }) => {
           onPress={() => console.log('Add to cart')}
         >
           <Text style={styles.addToCartText}>
-            Add to Cart - ${totalPrice.toFixed(2)}
+            Add to Cart - Rs.{totalPrice.toFixed(2)}
           </Text>
         </TouchableOpacity>
       </View>
