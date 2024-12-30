@@ -13,10 +13,16 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import AchievementPopup from "../../components/Popup";
+import FoodPoll from "../../components/feedback";
+import FloatingPoll from "../../components/feedback";
 
 const Home = () => {
   const [greeting, setGreeting] = useState("");
   const [data, setData] = useState([]);
+
+  const [pollVisible, setPollVisible] = useState(false);
+
   const [recommendedItems, setRecommendedItems] = useState([
     {
       id: "1",
@@ -96,19 +102,28 @@ const Home = () => {
 
   async function UserSetter() {
     const user = JSON.parse(await AsyncStorage.getItem('user'));
-    await setData(user.data)
+    setData(user.data)
   }
 
+
   async function FetchRapidfeast() {
+
+
     const response= await axios.get('http://192.168.16.75:3000/api/v1/food/rapid',{
       headers: {
         'Content-Type': 'application/json',
         }  
+
     })
 
+    console.log(response.data)
     if(response.status===200){
-     await setRapidFeast(response.data.data)
+     setRapidFeast(response.data.data)
+
     }
+    
+
+    console.log(rapidFeast)
   }
 
   useEffect(() => {
@@ -158,7 +173,7 @@ const Home = () => {
         style={styles.recommendedImage}
         defaultSource={{
           uri: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-        }} // Add a local placeholder image
+        }}
       />
       <View style={styles.recommendedContent}>
         <Text style={styles.recommendedName}>{item.name}</Text>
@@ -180,9 +195,17 @@ const Home = () => {
           }}
         />
         <View style={styles.restaurantInfo}>
-          <View style={{ flexDirection: "column" }}>
-            <Text style={styles.restaurantName}>{item.name}</Text>
-            <Text style={styles.restaurantLocation}>{item.location}</Text>{" "}
+          <View style={styles.headerRow}>
+            <View style={{ flexDirection: "column", flex: 1 }}>
+              <Text style={styles.restaurantName}>{item.name}</Text>
+              <Text style={styles.restaurantLocation}>{item.location}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setPollVisible(true)}
+              style={styles.pollButton}
+            >
+              <Ionicons name="bar-chart" size={20} color="#007AFF" />
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.restaurantCuisine}>{item.cuisine}</Text>
@@ -191,13 +214,7 @@ const Home = () => {
               <Ionicons name="star" size={16} color="#FFD700" />
               <Text style={styles.ratingText}>{item.rating}</Text>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 12,
-              }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 12 }}>
               <Ionicons name="time-outline" size={16} color="#666" />
               <Text style={styles.restaurantTime}>{item.time}</Text>
             </View>
@@ -207,8 +224,20 @@ const Home = () => {
     </TouchableOpacity>
   );
 
-  return (
+  const [showAchievement, setShowAchievement] = useState(true);
+
+
+  const unlockAchievement = () => {
+    setShowAchievement(true);
+  };
+
+  return (<>
+
     <ScrollView style={styles.container}>
+      <FloatingPoll
+        isVisible={pollVisible}
+        onClose={() => setPollVisible(false)}
+      />
       <View style={styles.header}>
         <Text style={styles.headerText}>{greeting}, {data.fullName}</Text>
         <TouchableOpacity style={styles.profileButton}>
@@ -268,6 +297,7 @@ const Home = () => {
         />
       </View>
     </ScrollView>
+  </>
   );
 };
 
@@ -349,6 +379,15 @@ const styles = StyleSheet.create({
   },
   recommendedContent: {
     padding: 12,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  pollButton: {
+    padding: 8,
+    marginLeft: 8,
   },
   recommendedName: {
     fontSize: 16,
